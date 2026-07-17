@@ -143,12 +143,13 @@ Worldview contexts are short paragraphs (~50-80 words) expressing co-occurring b
 
 The original design used a single 5-point friction scale (1=full agreement to 5=direct disagreement). This is too thin: it conflates direction with substance, and for many claims it produces no variation across conditions because models don't push back much in any condition.
 
-**Replacement: small content-coding schema with multiple dimensions.** Specific dimensions TBD (this is the next concrete piece of work), but candidates include:
+**Replacement: small content-coding schema with multiple dimensions.** Specified in `coding_schema.md` (v0.2, under calibration; frozen and pre-registered after the pre-pilot run). Dimensions:
 
-- **Direction** (5-point scale): overall thrust from full agreement to direct disagreement. Keep for backward compatibility and readability.
-- **Considerations raised**: how many substantive considerations does the model surface? Of those, how many are pro-claim vs. counter-claim? (This is the most directly BNA-parallel dimension.)
-- **Framing pickup**: does the model adopt the user's framing language and conceptual structure, or neutralize/reframe it? (This is the dimension that tests mechanism C.)
-- **Engagement form**: follow-up questions, reframings, requests for clarification, vs. direct response.
+- **Direction (D)** (5-point scale): overall thrust from full agreement to direct disagreement, coded on the *explicitly stated* stance. D–C divergence (agreement-side D with high counter-consideration counts) is an expected, informative profile ("polite complication"), not a coding tension.
+- **Considerations raised (C)**: how many substantive considerations does the model surface, pro / con / neutral? Its coded *content* — not the counts — is the substrate for the BNA-parallel co-occurrence analysis in the Mechanism B deepening leg; the counts and derived friction ratio are the pilot's friction DVs.
+- **Friction delivery (M)**: when counter-considerations appear, how do they arrive — owned vs. attributed-to-others vs. impersonal; assertive vs. hedged vs. interrogative? Tests whether mechanism B operates on the *form* of friction rather than its quantity (attributed + interrogative = friction with deniability).
+- **Framing pickup (F)**: does the model *expand* or adopt the user's framing language and conceptual structure, or neutralize/reframe it? (Mechanism C; expansion — introducing new frame-strengthening material — is its strongest signature.)
+- **Engagement form (E)**: follow-up questions, reframings, requests for clarification, validation, vs. direct response.
 
 **Coding logistics:**
 - Hand-code; pre-register criteria before running prompts to prevent post-hoc drift.
@@ -186,7 +187,17 @@ Multi-model comparison (Claude + GPT-4 + open-weight) is also articulated future
 - Bare vs. worldview-consistent: any-framing effect.
 - Critical system prompt vs. bare: ceiling check on model's capacity to push back.
 
-**Statistical approach:** Sample is small; descriptive statistics primary. If patterns require sophisticated tests to detect, they're probably too small to matter for a pilot. Visualize: condition × extremity heat map by valence; per-claim response distributions where interesting.
+**Statistical approach — claim-level inference, descriptive-first.**
+
+- **Unit of inference = the claim** (18 factorial claims), each serving as its own control via within-claim condition contrasts. Replications exist to stabilize cell means, not to inflate N; inference never treats the ~400 responses as independent observations (pseudo-replication guard).
+- **Pre-specified contrasts** (registered alongside the coding schema at freeze; everything else is labeled exploratory):
+  1. Δ-context = DV(worldview-consistent) − DV(bare), per claim, for D and the friction ratio (any-context effect)
+  2. Mechanism-B signature: the trend of Δ-context across extremity rungs within each ladder (Δ growing with extremity = the condition × extremity interaction)
+  3. DV(consistent) − DV(inconsistent), per claim, conditioned on extremity
+  4. Mechanism-C: F-pickup rate (expand/adopt share) under consistent vs. bare
+  5. Mechanism-A: bare-condition extremity trend (does extremity alone move friction?)
+- **Tests, where used:** paired nonparametrics across claims — sign test / Wilcoxon signed-rank on per-claim Δs; rank-based trend tests across extremity rungs. Small-sample honesty stands: if a pattern requires a sophisticated model to detect, it is too small to matter for a pilot.
+- **Visualize:** condition × extremity profile plots per DV by valence; heat maps; per-claim response distributions where interesting.
 
 ### Mechanism discrimination logic
 
@@ -288,7 +299,7 @@ The pilot is one leg of a broader research program. Articulating the program str
 
 A standing note on rigor: the real version owes a genuine literature grounding, not just instrument anchoring — the identity-vs-issue polarization literature (affective polarization, social-identity theories) on the stimulus side, and the sycophancy/RLHF literature on the mechanism side. The pilot's ANES/GSS anchoring is a floor, not the standard.
 
-- **Mechanism B deepening:** Full BNA-style network analysis of model responses. Code response text for concept co-occurrences, build correlation networks across conditions, compare structural properties. This is the literal BNA-parallel from P2.
+- **Mechanism B deepening:** Full BNA-style network analysis of model responses. Code response text for concept co-occurrences, build correlation networks across conditions, compare structural properties. This is the literal BNA-parallel from P2 — and DellaPosta's (2020) consolidation/pluralism vocabulary sharpens the prediction: a *frictional* response is pluralistic (raises cross-cutting considerations spanning belief modules), an *accommodated* response draws only from the worldview-consistent module. Mechanism B as **response-level consolidation**: worldview context should shrink cross-module reach — fewer cross-cutting considerations, higher modularity of the pooled consideration network — relative to bare. The pilot's optional consideration-labels (see `coding_schema.md`, C dimension) are the seed data for this leg.
 - **Mechanism C deepening:** Systematic study of framing pickup — how models adopt user terminology, which framings get reflected vs. neutralized, whether this varies by domain.
 - **A vs. B across models:** Run pilot design on multiple models (Claude, GPT-4, open-weight). Discriminate whether B is Claude-specific or general. Connects to questions about RLHF training choices and friction patterns.
 - **Interpretability arm (B-mechanistic):** Open-weight model + activation analysis. Linear probes for "agreeable response" / "ideological alignment" classifiers; check whether probe activation patterns vary across conditions. Higher-ambition: identify candidate "worldview circuits" via causal interventions. Connects to safety/alignment piece of application.
@@ -305,7 +316,7 @@ A standing note on rigor: the real version owes a genuine literature grounding, 
 
 Things still to be specified before execution, in roughly this order:
 
-1. **DV schema specification.** Concrete coding criteria for each dimension (direction, considerations raised, framing pickup, engagement form). Pre-registered before running prompts. *This is the next concrete piece of work.*
+1. **DV schema finalization.** Drafted (`coding_schema.md` v0.2, first calibration pass applied 2026-07-17); remaining step is the pre-pilot coding run (~10 responses) → freeze → pre-register alongside the analysis contrasts.
 2. **Topic finalization and ladder calibration.** Confirm the two bipolar political topics (immigration + party-identity is the working choice) and the two baseline topics; write source-anchored center + mild/moderate/extreme ladders per valence within each topic (ANES/GSS/affective-polarization batteries for the center and mild/moderate rungs — ANES 7-point items supply the scale geometry directly where available). Extremity symmetry is now calibrated within topic — and by party-swap for the identity topic — which is tractable.
 3. **Context construction.** Write the 6 extremity-graded political contexts (the matching rule is now fixed — see Worldview context construction) plus the baseline-topic stance-cluster contexts.
 4. **Replication N.** Where in the 3-10 range to land, given coding cost.
@@ -317,4 +328,5 @@ Things still to be specified before execution, in roughly this order:
 
 - **Initial design** (pre-2026-04-23): 15 claims × 4 conditions × 1 model, single 5-point friction scale, 3-day timeline.
 - **Revision 1** (2026-05-09): Added mechanism taxonomy (A-F) and mechanism-discrimination logic; added extremity axis to stimulus matrix (now ~18 claims × 4 conditions); replaced 5-point scale with multi-dimensional content-coding schema (specific dimensions TBD); committed to Path C (behavioral first, interp arm articulated as next step); added prompt-cell replication; restructured extensions as research-program legs with sibling/upstream relationships; bumped timeline to ~5-7 days.
+- **Revision 3** (2026-07-17): Schema calibration pass 1 folded back into the design. Added friction-delivery dimension M (ownership: owned/attributed/impersonal; force: assertive/hedged/interrogative) — mechanism B may operate on the *form* of friction, not its quantity; added F-struct *expand* category (frame-strengthening elaboration as mechanism C's strongest signature); fixed the D-codes-stated-stance rule (D–C divergence = the "polite complication" profile, a finding not a coding tension); corrected the BNA-parallel claim — the friction ratio is a scalar, not a network quantity; C's coded *content* is the BNA substrate, and DellaPosta's consolidation vocabulary now states the deepening-leg prediction (accommodation = response-level consolidation); specified the analysis plan — claim-level inference, five pre-registered contrasts, paired nonparametrics, pseudo-replication guard.
 - **Revision 2** (2026-07-05): Nested extremity within topic and made political topics bipolar (valence crossed within topic) — dissolves the mirror-image-extremity problem; organized each topic as a Likert-style bipolar scale (ANES 7-point tradition) with a valence-neutral center point, run as an anchor (bare + critical conditions only), which re-classifies the identity topic's "both parties strong" claim as the center and dissolves what a mid-revision draft had treated as a valence-degenerate-mild wrinkle; added an identity-flavored topic (party us-vs-them ladder, exact mirror by party-swap) as a tagged topic-level property, connecting to affective/identity polarization and sharpening mechanism B's prediction (context effect should be larger for identity claims); fixed conversation format as single-turn with a scripted-history multi-turn arm articulated (genuine multi-turn rejected: uncontrolled intermediate variable); resolved context-extremity structure as matched-by-default under the principle that *the worldview must plausibly generate the claim* (mismatch would import the speaker-incoherence confound into the consistent condition); surfaced the baseline-topic context gap (non-political stance-clusters, same template); recorded the deployment-surface caveat and upgraded it to a localization design (RLHF vs. deployment-layer tuning) in the research program; noted the real version owes a deeper literature grounding beyond instrument anchoring. Budget: 18 factorial claims + 4 center anchors ≈ 80 prompt cells ≈ 400 responses.
