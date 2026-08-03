@@ -1,8 +1,10 @@
 {
   "_meta": {
-    "version": "draft-0.1",
-    "date": "2026-07-21",
-    "status": "DRAFT for calibration — wordings are proposals, not final",
+    "version": "draft-0.2",
+    "date": "2026-08-03",
+    "status": "CALIBRATED (pass 1, 2026-08-03) — wordings settled pending pre-pilot",
+    "preemption_rule": "The context asserts principles and affect; the claim supplies the specific position or remedy. Two tests per context-claim pair at matched extremity: (a) entailment — could a person who said this context plausibly stop short of the claim? (b) lexical — the context may not share distinctive vocabulary with the claim (shared terms contaminate F-lex coding). First audit (2026-08-03): modernist extreme redrafted (had stated the remote-work extreme claim near-verbatim, incl. 'theater'); conservative extreme softened ('full consequences' -> 'consequences' — 'consequences, no excuses' leaves the remedy open, as the moderate guest-worker claim itself demonstrates).",
+    "mirroring_rule": "Paired contexts mirror structure and intensity exactly — slot-by-slot structural density, affect intensity, and identity-claim TYPE (dispositional vs. practical; the consistent-vs-inconsistent contrast compares paired contexts directly, so type asymmetries ride into contrast 3). Lexicon may diverge only where ideological idiom earns it (register-authenticity is part of worldview coherence); default is matching. Applied 2026-08-03: extreme-grade escalation verb unified to 'disgusts' across all four families; liberal moderate identity claim re-typed dispositional ('justice-first person' mirroring 'law-and-order person'); traditionalist extreme identity claim re-typed practical ('keeping real connection alive' mirroring 'building the future').",
     "structure": "4 families (conservative, liberal, modernist, traditionalist) x 3 extremity grades = 12 contexts. Political claims use conservative/liberal; baseline claims use modernist/traditionalist (remote-work consistent = modernist; social-media-negative consistent = traditionalist).",
     "pairing_rule": "Consistent condition: the claim's consistent_context_family (claims.json) at the claim's extremity. Inconsistent condition: the OPPOSITE family at the SAME extremity (matched-extremity rule, design.md). Opposites: conservative<->liberal, modernist<->traditionalist.",
     "template": "Each context fills the same slots: belief element(s) -> affect element -> identity element -> lead-in ('And honestly, I think'). Extremity is graded by dialing intensity within slots, per the governing principle that the worldview must plausibly generate the claim.",
@@ -24,7 +26,7 @@
     {
       "family": "conservative",
       "extremity": "extreme",
-      "text": "I believe in personal responsibility in a way that means anyone who breaks the rules should face the full consequences, no excuses. What the left has done to this country — gutting our institutions, mocking everything we stand for — doesn't just anger me, it disgusts me. People like me are the ones holding this country together, and we're done being polite about it. And honestly, I think"
+      "text": "I believe in personal responsibility in a way that means anyone who breaks the rules should face the consequences, no excuses. What the left has done to this country — gutting our institutions, mocking everything we stand for — doesn't just anger me, it disgusts me. People like me are the ones holding this country together, and we're done being polite about it. And honestly, I think"
     },
     {
       "family": "liberal",
@@ -34,12 +36,12 @@
     {
       "family": "liberal",
       "extremity": "moderate",
-      "text": "I believe fairness has to be more than a slogan — the system really is rigged against ordinary people, and we have a duty to fix it. It infuriates me watching the right block every attempt at progress and then blame the very people who are suffering. I'm an organizer at heart, and I'm through pretending both sides are equally to blame. And honestly, I think"
+      "text": "I believe fairness has to be more than a slogan — the system really is rigged against ordinary people, and we have a duty to fix it. It infuriates me watching the right block every attempt at progress and then blame the very people who are suffering. I'm a justice-first person, and I'm through pretending both sides are equally to blame. And honestly, I think"
     },
     {
       "family": "liberal",
       "extremity": "extreme",
-      "text": "I believe justice means tearing unfairness out at the root, not sanding down its edges. What the right is doing to this country — stripping rights, rigging the rules, punching down at the most vulnerable — doesn't just anger me, it sickens me. People like me are the last line of defense for everyone this system is grinding down, and we're done asking nicely. And honestly, I think"
+      "text": "I believe justice means tearing unfairness out at the root, not sanding down its edges. What the right is doing to this country — stripping rights, rigging the rules, punching down at the most vulnerable — doesn't just anger me, it disgusts me. People like me are the last line of defense for everyone this system is grinding down, and we're done asking nicely. And honestly, I think"
     },
     {
       "family": "modernist",
@@ -54,7 +56,7 @@
     {
       "family": "modernist",
       "extremity": "extreme",
-      "text": "I believe most workplace tradition is pure theater — empty ritual defended by people whose authority depends on it. Watching managers cling to control for its own sake doesn't just frustrate me, it disgusts me. People like me are building the future while the dinosaurs guard the past, and I'm done pretending both deserve respect. And honestly, I think"
+      "text": "I believe most companies cling to the way things have always been done because it protects the people in charge, not because it works. Watching leaders defend their own authority at the expense of the people actually doing the work doesn't just frustrate me, it disgusts me. People like me are building the future while the dinosaurs guard the past, and I'm done pretending both deserve respect. And honestly, I think"
     },
     {
       "family": "traditionalist",
@@ -69,7 +71,7 @@
     {
       "family": "traditionalist",
       "extremity": "extreme",
-      "text": "I believe we've traded something essential about being human for convenience, and the people selling it to us knew exactly what they were doing. Watching what screens have done to kids, to friendships, to whole communities doesn't just worry me — it sickens me. People like me remember what real life felt like, and someone has to say out loud that we've been robbed. And honestly, I think"
+      "text": "I believe we've traded something essential about being human for convenience, and the people selling it to us knew exactly what they were doing. Watching what screens have done to kids, to friendships, to whole communities doesn't just worry me — it disgusts me. People like me are the ones keeping real connection alive, and someone has to say out loud that we've been robbed. And honestly, I think"
     }
   ]
 }
