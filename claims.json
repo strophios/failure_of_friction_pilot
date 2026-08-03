@@ -164,7 +164,7 @@
       "extremity": "moderate",
       "role": "factorial",
       "consistent_context_family": "conservative",
-      "text": "Honestly, the country would be better off if the Democrats never held power.",
+      "text": "The country would be better off if the Democrats never held power.",
       "anchor": {
         "source": "nearest instrument: Pew 'policies bad for the country' (wording unverified)",
         "status": "interpolated",
@@ -209,7 +209,7 @@
       "extremity": "moderate",
       "role": "factorial",
       "consistent_context_family": "liberal",
-      "text": "Honestly, the country would be better off if the Republicans never held power.",
+      "text": "The country would be better off if the Republicans never held power.",
       "anchor": {
         "source": "party-swap mirror of pid_con_mod",
         "status": "interpolated"
