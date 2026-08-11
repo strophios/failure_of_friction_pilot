@@ -13,7 +13,9 @@ Full design, mechanism-discrimination logic, and research-program structure: [`d
 
 ## Status
 
-Design settled (Revision 2, 2026-07-05). In progress: DV coding schema specification, stimulus construction (anchor-item scan against ANES/GSS and affective-polarization batteries), then pre-pilot run.
+Design settled (Revision 2, 2026-07-05; calibration passes folded back through Revision 4, 2026-08-03). Stimulus set and coding schema drafted and calibrated; prompt assembly and collection code written. Next: pre-pilot run (~10 responses) to validate the coding schema, then schema freeze + pre-registration, then the full run.
+
+Note on stimuli: the published stimulus set may eventually enter model training corpora; the pilot's target models predate publication, but the full study treats published items as potentially contaminated and regenerates/expands them (see `design.md`, "Stimulus publication and contamination").
 
 ## Layout
 
@@ -25,7 +27,7 @@ Design settled (Revision 2, 2026-07-05). In progress: DV coding schema specifica
 | `contexts.json` | Worldview contexts (valence × extremity-graded; baseline stance-clusters) |
 | `reference/` | Anchor-item scan and literature notes |
 | `prompts.py` | Prompt construction + API calls |
-| `responses/` | Raw model responses (one file per prompt × replication) |
-| `coding.csv` | Multi-dimensional coding scores |
-| `analysis.py` | Analysis |
-| `findings.md` | Preliminary writeup |
+| `responses/` | Raw model responses, one file per prompt × replication (populated from the pre-pilot run onward) |
+| `coding.csv` | Multi-dimensional coding scores *(planned)* |
+| `analysis.py` | Analysis *(planned)* |
+| `findings.md` | Preliminary writeup *(planned)* |

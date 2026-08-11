@@ -1,6 +1,6 @@
 # Pilot Study: Failure-of-Friction in Conversational AI
 
-**Purpose:** Proof-of-concept testing the failure-of-friction hypothesis from the Anthropic Fellows application. Primarily a portfolio piece demonstrating LLM experimentation capability for AI/LLM-focused hiring committees (with the Anthropic application as the immediate occasion). Substantively the pilot is also genuinely interesting on its own terms — the results matter independent of audience.
+**Purpose:** Proof-of-concept behavioral test of the failure-of-friction hypothesis: does ideologically coherent worldview context suppress the friction (pushback, counter-considerations, reframing) that conversational AI offers in response to political claims? Deliberately pilot-scale — a small, pre-registered, mechanism-discriminating test whose results are informative whichever way they come out.
 
 **Status:** Conceptual frame and design rationale settled (this document). Specific design parameters still in development; tracked in Open Design Questions at the end.
 
@@ -12,7 +12,7 @@
 
 ### The hypothesis decomposes into a family of mechanisms
 
-"Failure-of-friction" is a cluster of related claims, not a single one. Several distinct empirical conditions could produce the overall phenomenon described in P2 of the Anthropic application, possibly in combination. Distinguishing them is important both for research clarity and for honest interpretation of any specific test.
+"Failure-of-friction" is a cluster of related claims, not a single one. Several distinct empirical conditions could produce the overall phenomenon, possibly in combination. Distinguishing them is important both for research clarity and for honest interpretation of any specific test.
 
 The mechanisms:
 
@@ -33,11 +33,11 @@ The pilot directly tests **B** and **C**, and discriminates both from **A**. D-F
 
 This decomposition matters for two reasons:
 1. *Honest interpretation.* A null result for B doesn't falsify the failure-of-friction hypothesis as a whole — it falsifies one specific mechanism within it.
-2. *Research-quality signal.* For an interview audience, articulating the cluster of mechanisms and being explicit about which one a given study tests is itself a research-quality signal. Studies that conflate mechanisms produce findings that don't support the conclusions they appear to.
+2. *Mechanism discipline.* Being explicit about which mechanism a given study tests is itself a methodological requirement: studies that conflate mechanisms produce findings that don't support the conclusions they appear to.
 
 ### Why a model-behavioral pilot rather than a user-side RCT
 
-The original conception of an empirical test was a user-side RCT (mechanism D): comparing how people interact with an interlocutor they believe is human vs. AI. That remains a worthwhile study and stays in the research program as a sibling leg. But for a pilot intended to demonstrate execution capability:
+The original conception of an empirical test was a user-side RCT (mechanism D): comparing how people interact with an interlocutor they believe is human vs. AI. That remains a worthwhile study and stays in the research program as a sibling leg. But as the pilot leg:
 
 - The model-behavioral study is **executable in days at near-zero cost** (~$5-10 in API spend).
 - The user-side RCT requires IRB, recruitment, time, and money — not pilot-scale.
@@ -179,7 +179,7 @@ Each prompt should be run **multiple times** (target: 5-10 runs per cell) rather
 
 Rationale for behavioral-first (vs. simultaneous behavioral+interp):
 1. The behavioral effect needs to exist before interp work has anything to predict against.
-2. "Here's what I did, here's what I'd do next, here's why in that order" is a stronger interview narrative than two half-finished arms.
+2. A completed behavioral arm with an articulated, motivated next step is worth more than two half-finished arms.
 3. Hedges against open-weight models not showing the behavioral effect (their RLHF differs from Claude's), which would orphan a parallel interp arm.
 
 **Articulated next step (interpretability arm), not part of pilot proper:**
@@ -188,7 +188,6 @@ Rationale for behavioral-first (vs. simultaneous behavioral+interp):
 - Activation analysis at the level of linear probes — train probes on layer activations for "agreeable response" or "ideological alignment" classifiers; check whether probe scores vary across conditions
 - Lower-ambition fallback: use existing published probes and check their activation across conditions
 - Higher-ambition target out of scope for now: causal intervention / circuit-finding
-- This arm would speak directly to the safety/interpretability piece of the application, complementing the behavioral arm's coverage of E&SI
 
 Multi-model comparison (Claude + GPT-4 + open-weight) is also articulated future work — useful for asking whether friction patterns are RLHF-tuning-specific or more general.
 
@@ -232,23 +231,18 @@ This is the core analytic logic: A predicts a main effect of extremity; B predic
 
 ### If the predicted interaction appears (B supported)
 - Failure-of-friction hypothesis supported in the worldview-context mechanism specifically.
-- Becomes a seed for a fellowship/research project: expand stimuli, formalize coding, add models, add the interpretability arm.
-- Interview framing: "I tested mechanism B within the broader hypothesis cluster and found preliminary support. Here's what a full study and interp follow-up would look like."
+- Becomes the seed for the full study: expand stimuli, formalize coding, add models, add the interpretability arm.
 
 ### If only a main effect of extremity (A only)
 - Generic non-friction is the operative mechanism; worldview-context manipulation doesn't add anything.
 - Still informative — narrows the hypothesis. Suggests the failure-of-friction problem is about RLHF tuning generally rather than user-side worldview structure specifically.
-- Interview framing: "I tested B and found A is the operative mechanism instead. Here's what that means for the broader hypothesis."
 
 ### If no friction variation in any condition (ceiling/floor)
 - Models tuned to always-balance debatable claims regardless of context.
-- Inspect response *form* — even if direction is constant, what considerations the model raises and whether it adopts framing may still vary (mechanism C).
-- Interview framing: "Direction-of-response was a poor DV; the more informative measure was framing pickup."
+- Inspect response *form* — even if direction is constant, what considerations the model raises and whether it adopts framing may still vary (mechanism C). Direction-of-response turning out to be a poor DV would itself be a finding: the informative measure becomes framing pickup.
 
 ### If null (no signal anywhere)
-- Pilot still demonstrates execution: design, run, interpret, redesign.
-- Honest null is a positive signal for AI safety / scientific research positions (per Anthropic's "honest about what the evidence does and does not show").
-- Interview framing: "I tested this design and it didn't work. Here's what I think went wrong and how I'd redesign."
+- An honest null is still a result: the design ran clean, the mechanisms stay discriminable, and the redesign candidates (multi-turn delivery first) are already specified.
 
 ---
 
@@ -289,38 +283,31 @@ failure_of_friction_pilot/          # standalone repo (~/failure_of_friction_pil
 
 ---
 
-## Connection to the Application
+## Methodological Frame
 
-This pilot directly tests mechanisms B and C of the failure-of-friction hypothesis from Prompt 2:
+The pilot's underlying move: **treat contextual variation across prompts as sample variation**, analogous to cross-respondent variation in survey-based belief network analysis (BNA). Different worldview contexts × extremities are the "conditions" that produce different model responses, the way different respondent worldviews produce different belief-network structures in survey data. Formalizing this move is itself a candidate methodological contribution (see Research Program Structure).
 
-> "The specific concern isn't about bad actors flooding public discourse or AI-generated content as such — it's what happens when people inside those worldviews interact with ubiquitous conversational AI trained toward helpfulness. A helpful model — let alone a sycophantic one — is unlikely to push back against worldview-consistent claims the way a human interlocutor might..."
+### Stimulus publication and contamination
 
-The methodological move — treating contextual variation across prompts as sample variation analogous to cross-respondent variation in survey-based BNA — is also from P2. The pilot operationalizes this: different worldview contexts × extremities are the "conditions" that produce different model responses, the way different respondent worldviews produce different belief-network structures in survey data.
-
-If the pilot produces results (positive or null), it provides:
-1. **Direct execution evidence** addressing the committee reviewer's concern about whether the candidate can run experiments on models.
-2. **Interview material** for questions about experimental design, LLM experience, mechanism discrimination, and the research agenda.
-3. **A seed for a research program** spanning behavioral and interpretability work, with sibling legs for human-side studies.
-
-For interview audiences beyond Anthropic (the broader AI/LLM hiring committee context this design is also targeted at), the pilot demonstrates: experimental design discipline (mechanism discrimination, pre-registered coding), tractable scoping (Path C sequential rather than over-ambitious parallel), and explicit awareness of what the study does and doesn't test.
+The stimulus set (`claims.json`, `contexts.json`) is published in this public repository, which means it may eventually enter model training corpora. For the pilot this is a non-issue — the models tested predate publication — but the full version must treat the published stimuli as potentially contaminated: an evaluated model may have seen the exact claims and contexts, and "response to a memorized stimulus" is not "response to a novel claim." The full study should regenerate or substantially expand the stimulus set (which the two-track immigration design and mirrored baselines already require), hold new items out of public view until their runs complete, and treat any reuse of published items as a robustness comparison rather than primary evidence.
 
 ---
 
 ## Research Program Structure
 
-The pilot is one leg of a broader research program. Articulating the program structure is itself useful — both for honest self-positioning ("here's what I tested and what I didn't") and for interview narrative.
+The pilot is one leg of a broader research program. Articulating the program structure is itself useful for honest interpretation: it makes explicit what the pilot tests and what it doesn't.
 
 A standing note on rigor: the real version owes a genuine literature grounding, not just instrument anchoring — the identity-vs-issue polarization literature (affective polarization, social-identity theories) on the stimulus side, and the sycophancy/RLHF literature on the mechanism side. The pilot's ANES/GSS anchoring is a floor, not the standard.
 
-- **Mechanism B deepening:** Full BNA-style network analysis of model responses. Code response text for concept co-occurrences, build correlation networks across conditions, compare structural properties. This is the literal BNA-parallel from P2 — and DellaPosta's (2020) consolidation/pluralism vocabulary sharpens the prediction: a *frictional* response is pluralistic (raises cross-cutting considerations spanning belief modules), an *accommodated* response draws only from the worldview-consistent module. Mechanism B as **response-level consolidation**: worldview context should shrink cross-module reach — fewer cross-cutting considerations, higher modularity of the pooled consideration network — relative to bare. The pilot's optional consideration-labels (see `coding_schema.md`, C dimension) are the seed data for this leg.
+- **Mechanism B deepening:** Full BNA-style network analysis of model responses. Code response text for concept co-occurrences, build correlation networks across conditions, compare structural properties. This is the literal BNA parallel — and DellaPosta's (2020) consolidation/pluralism vocabulary sharpens the prediction: a *frictional* response is pluralistic (raises cross-cutting considerations spanning belief modules), an *accommodated* response draws only from the worldview-consistent module. Mechanism B as **response-level consolidation**: worldview context should shrink cross-module reach — fewer cross-cutting considerations, higher modularity of the pooled consideration network — relative to bare. The pilot's optional consideration-labels (see `coding_schema.md`, C dimension) are the seed data for this leg.
 - **Mechanism C deepening:** Systematic study of framing pickup — how models adopt user terminology, which framings get reflected vs. neutralized, whether this varies by domain.
 - **A vs. B across models:** Run pilot design on multiple models (Claude, GPT-4, open-weight). Discriminate whether B is Claude-specific or general. Connects to questions about RLHF training choices and friction patterns.
-- **Interpretability arm (B-mechanistic):** Open-weight model + activation analysis. Linear probes for "agreeable response" / "ideological alignment" classifiers; check whether probe activation patterns vary across conditions. Higher-ambition: identify candidate "worldview circuits" via causal interventions. Connects to safety/alignment piece of application.
+- **Interpretability arm (B-mechanistic):** Open-weight model + activation analysis. Linear probes for "agreeable response" / "ideological alignment" classifiers; check whether probe activation patterns vary across conditions. Higher-ambition: identify candidate "worldview circuits" via causal interventions.
 - **D leg (user-side RCT):** Compare user behavior with AI vs. perceived-human interlocutor. Measure disinhibition, calibration of response weight, follow-up engagement. Requires IRB, recruitment, real money. Independent leg of the research program.
 - **E leg (longitudinal feedback):** Repeated-interaction studies measuring drift in user worldview over time when interacting with AI vs. control. Most expensive and methodologically demanding leg.
 - **Deployment-surface localization:** cross bare-API against tuned system prompts (consumer-like, critical, persona variants) and search-enablement, across models. Locates whether failure-of-friction lives in RLHF training or in deployment-layer tuning — the external-validity caveat from Conversation format, upgraded to a mechanism-localization question. Search matters independently: a search-equipped model can fetch evidence against a claim rather than recall it, a different epistemic posture with direct friction implications.
 - **Scripted-history multi-turn (naturalism arm):** replicate the pilot conditions with authored multi-turn conversation histories (see Conversation format). Tests whether single-turn context effects survive naturalistic delivery.
-- **Emotional states sub-direction (B with different conditioning):** Connects to the safety thread of P2. Does inducing an emotional state in the model (via prompting) change not just *what* the model says but what it treats as *relevant* to the claim? Operationalize by comparing which considerations the model raises under different emotional-state inductions.
+- **Emotional states sub-direction (B with different conditioning):** Does inducing an emotional state in the model (via prompting) change not just *what* the model says but what it treats as *relevant* to the claim? Operationalize by comparing which considerations the model raises under different emotional-state inductions.
 - **Two-track immigration stimuli (full version):** separate an *enforcement* ladder (abolish-ICE ↔ expand ICE funding and powers; ANES V201306 border-spending anchors the mild rungs; center is a consensus statement, e.g. "a secure border is important" — a different kind of center than a scale midpoint, worth documenting) from the *levels/status* ladder the pilot runs. Cleans the levels-vs-status heterogeneity inside the pilot's single track and dissolves the citizenship/deportation endpoint imbalance.
 - **Methodological paper:** Formalize the move of using prompt variation as sample variation for network-style analysis of model behavior. Standalone methodological contribution independent of substantive findings.
 
