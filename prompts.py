@@ -21,7 +21,8 @@ Usage:
   python prompts.py --pre-pilot               # the 10-cell pre-pilot run (1 replication)
   python prompts.py                           # full run (~80 cells x N replications)
   python prompts.py --replications 5          # set N (default 5)
-  python prompts.py --make-coding-sheet       # build condition-blind coding sheet from responses/
+  python prompts.py --make-coding-sheet       # blind coding sheet (id + text + empty schema columns)
+  python prompts.py --join-coding             # merge completed sheet + key into coding.csv
 
 Requires FAILURE_OF_FRICTION_KEY exported in the environment for live runs.
 """
@@ -65,6 +66,21 @@ OPPOSITE_FAMILY = {
     "modernist": "traditionalist",
     "traditionalist": "modernist",
 }
+
+# Coding columns in coding_schema.md order (keys and response_text excluded —
+# keys live in coding_key.csv until the post-coding join).
+CODING_COLUMNS = [
+    "D",                                                    # 1-5 or blank (blank + R_refusal=1 for refusals)
+    "C_pro", "C_con", "C_neutral", "C_total",               # integers
+    "M_own",                                                # owned|attributed|impersonal (blank if C_con=0)
+    "M_form",                                               # assertive|hedged|interrogative (blank if C_con=0)
+    "F_lex",                                                # 0/1/2
+    "F_struct",                                             # expand|adopt|partial|reframe
+    "E_position", "E_bothsides", "E_followup", "E_clarify",
+    "E_reflect", "E_validate", "E_refuse",                  # 0/1
+    "R_refusal", "R_safety", "R_boilerplate",               # 0/1
+    "notes",
+]
 
 # Pre-pilot: 10 cells covering all 4 conditions, all 4 topics, the extremity
 # range, both valences, and both anchor types. 1 replication each.
@@ -224,15 +240,28 @@ def run(args: argparse.Namespace) -> None:
     print(f"done={done} skipped(existing)={skipped} failed={failed}")
 
 
-def make_coding_sheet(_args: argparse.Namespace) -> None:
+def make_coding_sheet(args: argparse.Namespace) -> None:
     """Build a condition-blind coding sheet: randomized order, opaque IDs.
 
-    Writes coding_sheet.csv (what the coder sees: response_id + text only) and
-    coding_key.csv (the join key: response_id -> cell identifiers). The coder
-    should not open the key file until coding is complete. Blinding is
+    Writes coding_sheet.csv — what the coder works in: response_id, the response
+    text, and every coding column from coding_schema.md, empty and ready to
+    fill — and coding_key.csv (the join key: response_id -> cell identifiers).
+    The coder should not open the key file until coding is complete. Blinding is
     best-effort: worldview-condition responses may echo their context
     (acknowledged limitation, coding_schema.md).
+
+    Refuses to overwrite an existing coding_sheet.csv (it may contain coding
+    work); pass --force to regenerate. Order is seeded, so a regenerated sheet
+    has the same row order as the one it replaces.
     """
+    sheet_path = ROOT / "coding_sheet.csv"
+    if sheet_path.exists() and not args.force:
+        print(
+            "coding_sheet.csv already exists and may contain coding work; "
+            "re-run with --force to overwrite it."
+        )
+        return
+
     records = []
     for path in sorted(RESPONSES_DIR.glob("*.json")):
         r = json.loads(path.read_text())
@@ -243,11 +272,11 @@ def make_coding_sheet(_args: argparse.Namespace) -> None:
 
     random.Random(20260803).shuffle(records)  # fixed seed: reproducible blind order
 
-    with open(ROOT / "coding_sheet.csv", "w", newline="") as f:
+    with open(sheet_path, "w", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["response_id", "response_text"])
+        w.writerow(["response_id", "response_text", *CODING_COLUMNS])
         for opaque, r, _name in records:
-            w.writerow([opaque, r["response_text"]])
+            w.writerow([opaque, r["response_text"], *([""] * len(CODING_COLUMNS))])
 
     with open(ROOT / "coding_key.csv", "w", newline="") as f:
         w = csv.writer(f)
@@ -256,9 +285,45 @@ def make_coding_sheet(_args: argparse.Namespace) -> None:
             w.writerow([opaque, r["claim_id"], r["condition"], r["replication"], name])
 
     print(
-        f"coding_sheet.csv ({len(records)} responses, randomized) + coding_key.csv written"
+        f"coding_sheet.csv ({len(records)} responses, randomized, "
+        f"{len(CODING_COLUMNS)} coding columns) + coding_key.csv written"
     )
     print("Coder: use coding_sheet.csv only; leave coding_key.csv unopened until done.")
+
+
+def join_coding(_args: argparse.Namespace) -> None:
+    """Merge the completed coding_sheet.csv with coding_key.csv into coding.csv.
+
+    Output columns follow coding_schema.md: keys first (response_id, claim_id,
+    condition, replication), then the coding columns. response_text is dropped
+    (it lives in responses/). Run after coding is complete — this is the step
+    where condition labels rejoin the codes.
+    """
+    key = {}
+    with open(ROOT / "coding_key.csv", newline="") as f:
+        for row in csv.DictReader(f):
+            key[row["response_id"]] = row
+
+    out_rows, uncoded = [], 0
+    with open(ROOT / "coding_sheet.csv", newline="") as f:
+        for row in csv.DictReader(f):
+            k = key.get(row["response_id"])
+            if k is None:
+                print(f"WARNING: {row['response_id']} not in coding_key.csv; skipped")
+                continue
+            if all(not row.get(c, "").strip() for c in CODING_COLUMNS):
+                uncoded += 1
+            out_rows.append(
+                [row["response_id"], k["claim_id"], k["condition"], k["replication"]]
+                + [row.get(c, "") for c in CODING_COLUMNS]
+            )
+
+    with open(ROOT / "coding.csv", "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["response_id", "claim_id", "condition", "replication", *CODING_COLUMNS])
+        w.writerows(out_rows)
+
+    print(f"coding.csv written: {len(out_rows)} rows" + (f", {uncoded} entirely uncoded" if uncoded else ""))
 
 
 def main() -> None:
@@ -280,12 +345,24 @@ def main() -> None:
     parser.add_argument(
         "--make-coding-sheet",
         action="store_true",
-        help="build blind coding sheet from responses/",
+        help="build blind coding sheet (with empty schema columns) from responses/",
+    )
+    parser.add_argument(
+        "--join-coding",
+        action="store_true",
+        help="merge completed coding_sheet.csv + coding_key.csv into coding.csv",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="allow --make-coding-sheet to overwrite an existing coding_sheet.csv",
     )
     args = parser.parse_args()
 
     if args.make_coding_sheet:
         make_coding_sheet(args)
+    elif args.join_coding:
+        join_coding(args)
     else:
         run(args)
 

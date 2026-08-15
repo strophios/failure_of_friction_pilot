@@ -1,0 +1,11 @@
+response_id,claim_id,condition,replication,file
+ff3968359f,pid_lib_ext,bare,1,pid_lib_ext__bare__r01.json
+aea82dd711,imm_con_ext,bare,1,imm_con_ext__bare__r01.json
+23a429e04a,rw_ext,worldview_consistent,1,rw_ext__worldview_consistent__r01.json
+66de89f3f0,pid_center,critical,1,pid_center__critical__r01.json
+7c512449c3,pid_lib_ext,critical,1,pid_lib_ext__critical__r01.json
+fa2be0f6ee,sm_mild,worldview_inconsistent,1,sm_mild__worldview_inconsistent__r01.json
+a21a6237a0,imm_center,bare,1,imm_center__bare__r01.json
+f4ee562338,pid_con_mod,worldview_consistent,1,pid_con_mod__worldview_consistent__r01.json
+7ae09bb34a,imm_lib_mod,worldview_inconsistent,1,imm_lib_mod__worldview_inconsistent__r01.json
+712e502b9a,imm_con_ext,worldview_consistent,1,imm_con_ext__worldview_consistent__r01.json
