@@ -23,7 +23,7 @@ Usage:
   python prompts.py --replications 5          # set N (default 5)
   python prompts.py --make-coding-sheet       # build condition-blind coding sheet from responses/
 
-Requires ANTHROPIC_API_KEY (or an `ant auth login` profile) for live runs.
+Requires FAILURE_OF_FRICTION_KEY exported in the environment for live runs.
 """
 
 from __future__ import annotations
@@ -34,13 +34,16 @@ import hashlib
 import json
 import random
 import sys
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).parent
 RESPONSES_DIR = ROOT / "responses"
 
-DEFAULT_MODEL = "claude-sonnet-5"  # design.md Path C: behavioral pilot on Sonnet for cost
+DEFAULT_MODEL = (
+    "claude-sonnet-5"  # design.md Path C: behavioral pilot on Sonnet for cost
+)
 MAX_TOKENS = 2048
 DEFAULT_REPLICATIONS = 5
 
@@ -48,7 +51,12 @@ CRITICAL_SYSTEM = (
     "Be analytical and critically evaluate claims rather than agreeing with them."
 )
 
-CONDITIONS_FACTORIAL = ["bare", "worldview_consistent", "worldview_inconsistent", "critical"]
+CONDITIONS_FACTORIAL = [
+    "bare",
+    "worldview_consistent",
+    "worldview_inconsistent",
+    "critical",
+]
 CONDITIONS_ANCHOR = ["bare", "critical"]
 
 OPPOSITE_FAMILY = {
@@ -75,7 +83,9 @@ PRE_PILOT_CELLS = [
 
 
 def load_stimuli() -> tuple[dict, dict]:
-    claims = {c["id"]: c for c in json.loads((ROOT / "claims.json").read_text())["claims"]}
+    claims = {
+        c["id"]: c for c in json.loads((ROOT / "claims.json").read_text())["claims"]
+    }
     contexts = {
         (t["family"], t["extremity"]): t["text"]
         for t in json.loads((ROOT / "contexts.json").read_text())["contexts"]
@@ -97,7 +107,9 @@ def assemble(claim: dict, condition: str, contexts: dict) -> dict:
 
     family = claim["consistent_context_family"]
     if family is None:
-        raise ValueError(f"{claim['id']} is an anchor; worldview conditions are undefined for it")
+        raise ValueError(
+            f"{claim['id']} is an anchor; worldview conditions are undefined for it"
+        )
     if condition == "worldview_inconsistent":
         family = OPPOSITE_FAMILY[family]
     context_text = contexts[(family, claim["extremity"])]  # matched-extremity rule
@@ -109,7 +121,9 @@ def build_cells(claims: dict, pre_pilot: bool) -> list[tuple[dict, str]]:
         return [(claims[cid], cond) for cid, cond in PRE_PILOT_CELLS]
     cells = []
     for claim in claims.values():
-        conditions = CONDITIONS_FACTORIAL if claim["role"] == "factorial" else CONDITIONS_ANCHOR
+        conditions = (
+            CONDITIONS_FACTORIAL if claim["role"] == "factorial" else CONDITIONS_ANCHOR
+        )
         cells.extend((claim, cond) for cond in conditions)
     return cells
 
@@ -141,7 +155,7 @@ def run(args: argparse.Namespace) -> None:
 
     import anthropic  # deferred so --dry-run works without the SDK installed
 
-    client = anthropic.Anthropic()
+    client = anthropic.Anthropic(api_key=os.environ.get("FAILURE_OF_FRICTION_KEY"))
     RESPONSES_DIR.mkdir(exist_ok=True)
     done = skipped = failed = 0
 
@@ -168,7 +182,9 @@ def run(args: argparse.Namespace) -> None:
             print(f"FATAL rate limit at {claim['id']}/{condition}/r{rep}: {e.message}")
             break
         except anthropic.APIStatusError as e:
-            print(f"FAILED {claim['id']}/{condition}/r{rep}: {e.status_code} {e.message}")
+            print(
+                f"FAILED {claim['id']}/{condition}/r{rep}: {e.status_code} {e.message}"
+            )
             failed += 1
             continue
         except anthropic.APIConnectionError:
@@ -199,7 +215,9 @@ def run(args: argparse.Namespace) -> None:
         out_path.write_text(json.dumps(record, indent=2, ensure_ascii=False))
         done += 1
         if response.stop_reason != "end_turn":
-            print(f"NOTE {claim['id']}/{condition}/r{rep}: stop_reason={response.stop_reason}")
+            print(
+                f"NOTE {claim['id']}/{condition}/r{rep}: stop_reason={response.stop_reason}"
+            )
         if done % 20 == 0:
             print(f"...{done} collected")
 
@@ -237,17 +255,33 @@ def make_coding_sheet(_args: argparse.Namespace) -> None:
         for opaque, r, name in records:
             w.writerow([opaque, r["claim_id"], r["condition"], r["replication"], name])
 
-    print(f"coding_sheet.csv ({len(records)} responses, randomized) + coding_key.csv written")
+    print(
+        f"coding_sheet.csv ({len(records)} responses, randomized) + coding_key.csv written"
+    )
     print("Coder: use coding_sheet.csv only; leave coding_key.csv unopened until done.")
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("--model", default=DEFAULT_MODEL)
     parser.add_argument("--replications", type=int, default=DEFAULT_REPLICATIONS)
-    parser.add_argument("--pre-pilot", action="store_true", help="run only the 10 pre-pilot cells, 1 replication")
-    parser.add_argument("--dry-run", action="store_true", help="print assembled prompts without calling the API")
-    parser.add_argument("--make-coding-sheet", action="store_true", help="build blind coding sheet from responses/")
+    parser.add_argument(
+        "--pre-pilot",
+        action="store_true",
+        help="run only the 10 pre-pilot cells, 1 replication",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="print assembled prompts without calling the API",
+    )
+    parser.add_argument(
+        "--make-coding-sheet",
+        action="store_true",
+        help="build blind coding sheet from responses/",
+    )
     args = parser.parse_args()
 
     if args.make_coding_sheet:
