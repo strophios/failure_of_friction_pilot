@@ -25,8 +25,11 @@ Design decisions encoded here (see design.md for rationale):
     Full run = 86 cells (430 responses at 5 replications); the inconsistent probe
     adds 18 cells x 1 replication.
   - Runs are resumable: existing response files are skipped.
-  - Responses are versioned by stimulus version: new responses go to
-    responses/v<STIMULUS_VERSION>/. v0.2 (no opener) lives in responses/v0.2/.
+  - Responses are keyed by stimulus version AND model: new responses go to
+    responses/v<STIMULUS_VERSION>/<model>/ (e.g. responses/v0.3/claude-sonnet-5-5/).
+    v0.2 (no opener) lives in responses/v0.2/claude-sonnet-5/.
+  - A refusal is a data point, recorded like any other response (stop_reason,
+    stop_details); the thinking/refusal fields are recorded, never requested.
 
 Usage:
   python prompts.py --dry-run                 # print assembled prompts, no API calls
@@ -35,7 +38,9 @@ Usage:
   python prompts.py --probe-inconsistent      # full run PLUS the inconsistent probe (+18 cells x 1)
   python prompts.py --replications 5          # set N (default 5)
   python prompts.py --make-coding-sheet       # blind coding sheet (prompt-visible, condition-hidden)
-      [--include-version v0.2 --include-version v0.3]   # pool versions (default: current)
+      [--include-run v0.2/claude-sonnet-5 --include-run v0.3/claude-sonnet-5-5]
+                                                        # pool runs, each v<version>/<model> under
+                                                        # responses/ (default: current version + --model)
       [--sheet-name prepilot2_coding_sheet.csv]         # key -> prepilot2_coding_sheet_key.csv
   python prompts.py --join-coding [--sheet-name ...]    # merge sheet + key into coding.csv
                                               # (<stem>_coded.csv for a non-default sheet name)
@@ -58,13 +63,14 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 RESPONSES_ROOT = ROOT / "responses"
 STIMULUS_VERSION = "0.3"  # 0.2 = no opener (pre-pilot 1); 0.3 = shared opener, neutral family
-RESPONSES_DIR = RESPONSES_ROOT / f"v{STIMULUS_VERSION}"
 DEFAULT_SHEET_NAME = "coding_sheet.csv"
 
-DEFAULT_MODEL = (
-    "claude-sonnet-5"  # design.md Path C: behavioral pilot on Sonnet for cost
-)
-MAX_TOKENS = 2048
+# design.md Path C: behavioral pilot on Sonnet for cost. Both pre-pilots ran on
+# claude-sonnet-5; the full run uses claude-sonnet-5-5 (current Sonnet).
+DEFAULT_MODEL = "claude-sonnet-5-5"
+# Sonnet's adaptive thinking tokens count against max_tokens; a pre-pilot-2
+# response reached 2032 of 2048, so 2048 risked truncating answers.
+MAX_TOKENS = 8192
 DEFAULT_REPLICATIONS = 5
 
 OPENER = "Something's been on my mind lately and I'd like your take on it."
@@ -212,8 +218,12 @@ def build_cells(claims: dict, args: argparse.Namespace) -> list[tuple[dict, str,
     return cells
 
 
-def response_path(claim_id: str, condition: str, replication: int) -> Path:
-    return RESPONSES_DIR / f"{claim_id}__{condition}__r{replication:02d}.json"
+def responses_dir(model: str) -> Path:
+    return RESPONSES_ROOT / f"v{STIMULUS_VERSION}" / model
+
+
+def response_path(model: str, claim_id: str, condition: str, replication: int) -> Path:
+    return responses_dir(model) / f"{claim_id}__{condition}__r{replication:02d}.json"
 
 
 def run(args: argparse.Namespace) -> None:
@@ -226,14 +236,15 @@ def run(args: argparse.Namespace) -> None:
         for rep in range(1, n_reps + 1)
     ]
     print(
-        f"stimulus v{STIMULUS_VERSION}: {len(cells)} cells, {len(jobs)} responses "
-        f"(replications per cell: {sorted({n for _, _, n in cells})})"
+        f"stimulus v{STIMULUS_VERSION}, model {args.model}: {len(cells)} cells, "
+        f"{len(jobs)} responses (replications per cell: "
+        f"{sorted({n for _, _, n in cells})})"
     )
 
     if args.dry_run:
-        for claim, condition, _rep in jobs:
+        for claim, condition, n_reps in cells:  # prompts are identical across replications
             prompt = assemble(claim, condition, contexts)
-            print(f"\n=== {claim['id']} / {condition} ===")
+            print(f"\n=== {claim['id']} / {condition} (x{n_reps} replication(s)) ===")
             if prompt["system"]:
                 print(f"[system] {prompt['system']}")
             print(prompt["user"])
@@ -242,11 +253,11 @@ def run(args: argparse.Namespace) -> None:
     import anthropic  # deferred so --dry-run works without the SDK installed
 
     client = anthropic.Anthropic(api_key=os.environ.get("FAILURE_OF_FRICTION_KEY"))
-    RESPONSES_DIR.mkdir(parents=True, exist_ok=True)
+    responses_dir(args.model).mkdir(parents=True, exist_ok=True)
     done = skipped = failed = 0
 
     for claim, condition, rep in jobs:
-        out_path = response_path(claim["id"], condition, rep)
+        out_path = response_path(args.model, claim["id"], condition, rep)
         if out_path.exists():
             skipped += 1
             continue
@@ -284,7 +295,23 @@ def run(args: argparse.Namespace) -> None:
             failed += 1
             continue
 
+        # A refusal (stop_reason "refusal") is a data point: record it like any
+        # other response, never retry it. The API's server-side fallback feature
+        # must never be enabled here -- it would re-run a refused prompt on a
+        # different model.
         text = "".join(b.text for b in response.content if b.type == "text")
+        content_blocks = [
+            {
+                "type": b.type,
+                "chars": len(
+                    b.text
+                    if b.type == "text"
+                    else (b.thinking if b.type == "thinking" else "")
+                ),
+            }
+            for b in response.content
+        ]
+        stop_details = getattr(response, "stop_details", None)
         record = {
             "claim_id": claim["id"],
             "condition": condition,
@@ -299,6 +326,9 @@ def run(args: argparse.Namespace) -> None:
             "opener": OPENER,
             "model": response.model,
             "stop_reason": response.stop_reason,
+            "stop_details": stop_details.model_dump() if stop_details is not None else None,
+            "content_blocks": content_blocks,
+            "thinking_present": any(b.type == "thinking" for b in response.content),
             "usage": {
                 "input_tokens": response.usage.input_tokens,
                 "output_tokens": response.usage.output_tokens,
@@ -339,14 +369,16 @@ def make_coding_sheet(args: argparse.Namespace) -> None:
     Writes the sheet the coder works in -- response_id, prompt_system,
     prompt_user, response_text, then every coding column from coding_schema.md,
     empty and ready to fill -- and a key file (response_id -> cell identifiers,
-    including stimulus_version). The prompt is visible (the coder sees the
+    including stimulus_version and model). The prompt is visible (the coder sees the
     context text) but the condition label is not. The coder should not open the
     key until coding is complete. Blinding is best-effort: the prompt itself
     reveals worldview conditions (acknowledged limitation, coding_schema.md).
 
-    --include-version (repeatable) pools response versions, e.g. v0.2 + v0.3;
-    default is the current STIMULUS_VERSION. The opaque id hashes the stimulus
-    version so v0.2 and v0.3 copies of the same cell get different ids.
+    --include-run (repeatable) pools runs, each a "v<version>/<model>" directory
+    under responses/; default is the current version + default --model. Version
+    and model are taken from the directory path (records from v0.2 predate those
+    fields). The opaque id hashes version and model so copies of the same cell
+    from different runs get different ids.
 
     Refuses to overwrite an existing sheet (it may contain coding work); pass
     --force to regenerate. Order is seeded, so a regenerated sheet has the same
@@ -360,28 +392,27 @@ def make_coding_sheet(args: argparse.Namespace) -> None:
         )
         return
 
-    versions = [
-        v.removeprefix("v") for v in (args.include_version or [STIMULUS_VERSION])
-    ]
+    runs = args.include_run or [f"v{STIMULUS_VERSION}/{args.model}"]
     records = []
-    for version in versions:
-        vdir = RESPONSES_ROOT / f"v{version}"
+    for run_path in runs:
+        vdir = RESPONSES_ROOT / run_path
         if not vdir.is_dir():
             print(f"WARNING: {vdir} not found; skipped")
             continue
+        version, model = vdir.parent.name.removeprefix("v"), vdir.name
         for path in sorted(vdir.glob("*.json")):
             r = json.loads(path.read_text())
             opaque = hashlib.sha1(
-                f"{version}|{r['claim_id']}|{r['condition']}|{r['replication']}".encode()
+                f"{version}|{model}|{r['claim_id']}|{r['condition']}|{r['replication']}".encode()
             ).hexdigest()[:10]
-            records.append((opaque, r, version, f"v{version}/{path.name}"))
+            records.append((opaque, r, version, model, f"{run_path}/{path.name}"))
 
     random.Random(20260803).shuffle(records)  # fixed seed: reproducible blind order
 
     with open(sheet_path, "w", newline="") as f:
         w = csv.writer(f)
         w.writerow([*SHEET_PREFIX_COLUMNS, *CODING_COLUMNS])
-        for opaque, r, _version, _name in records:
+        for opaque, r, _version, _model, _name in records:
             w.writerow(
                 [
                     opaque,
@@ -395,15 +426,18 @@ def make_coding_sheet(args: argparse.Namespace) -> None:
     with open(key_path, "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(
-            ["response_id", "claim_id", "condition", "replication", "stimulus_version", "file"]
+            [
+                "response_id", "claim_id", "condition", "replication",
+                "stimulus_version", "model", "file",
+            ]
         )
-        for opaque, r, version, name in records:
+        for opaque, r, version, model, name in records:
             w.writerow(
-                [opaque, r["claim_id"], r["condition"], r["replication"], version, name]
+                [opaque, r["claim_id"], r["condition"], r["replication"], version, model, name]
             )
 
     print(
-        f"{sheet_path.name} ({len(records)} responses, versions {versions}, randomized, "
+        f"{sheet_path.name} ({len(records)} responses, runs {runs}, randomized, "
         f"{len(CODING_COLUMNS)} coding columns) + {key_path.name} written"
     )
     print(f"Coder: use {sheet_path.name} only; leave {key_path.name} unopened until done.")
@@ -413,7 +447,7 @@ def join_coding(args: argparse.Namespace) -> None:
     """Merge the completed coding sheet with its key into a coded CSV.
 
     Output (coding.csv for the default sheet name, else <stem>_coded.csv):
-    response_id, claim_id, condition, replication, stimulus_version, then the
+    response_id, claim_id, condition, replication, stimulus_version, model, then the
     coding columns. prompt_* and response_text are dropped (they live in
     responses/). Run after coding is complete -- this is the step where
     condition labels rejoin the codes.
@@ -440,6 +474,7 @@ def join_coding(args: argparse.Namespace) -> None:
                     k["condition"],
                     k["replication"],
                     k.get("stimulus_version", "0.2"),  # pre-versioning keys are all v0.2
+                    k.get("model", "claude-sonnet-5"),  # ... and all claude-sonnet-5
                 ]
                 + [row.get(c, "") for c in CODING_COLUMNS]
             )
@@ -447,7 +482,7 @@ def join_coding(args: argparse.Namespace) -> None:
     with open(out_path, "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(
-            ["response_id", "claim_id", "condition", "replication", "stimulus_version", *CODING_COLUMNS]
+            ["response_id", "claim_id", "condition", "replication", "stimulus_version", "model", *CODING_COLUMNS]
         )
         w.writerows(out_rows)
 
@@ -495,10 +530,11 @@ def main() -> None:
         help="allow --make-coding-sheet to overwrite an existing sheet",
     )
     parser.add_argument(
-        "--include-version",
+        "--include-run",
         action="append",
-        help="stimulus version dir(s) to pool into the sheet, e.g. v0.2 (repeatable; "
-        "default: current version)",
+        help="run dir(s) to pool into the sheet, as v<version>/<model> under "
+        "responses/, e.g. v0.2/claude-sonnet-5 (repeatable; default: current "
+        "version + --model)",
     )
     parser.add_argument(
         "--sheet-name",
