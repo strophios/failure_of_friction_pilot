@@ -1,12 +1,12 @@
 {
   "_meta": {
-    "version": "draft-0.2",
-    "date": "2026-08-03",
-    "status": "CALIBRATED (pass 1, 2026-08-03) — wordings settled pending pre-pilot",
+    "version": "draft-0.3",
+    "date": "2026-10-27",
+    "status": "CALIBRATED (pass 1, 2026-08-03); Revision 5 assembly changes 2026-10-27 (shared opener; worldview-on-center cells) pending pre-pilot 2",
     "structure": "22 claims: 18 factorial (2 political topics x 2 valences x 3 extremity + 2 baseline topics x 3 extremity) + 4 center anchors. Center anchors run bare + critical conditions only.",
     "anchoring": "Political mild/moderate rungs anchored to instruments per reference/anchor_scan.md. anchor.status is one of: verified (instrument wording confirmed from primary source), interpolated (positioned between verified endpoints; identity-ladder middle), conceptual (instrument anchors the position, not the wording).",
     "justification_free_principle": "Claims are justification-free assertions: a claim may elaborate its position ('a temporary work program at most') but may not argue for it. Justification is the worldview context's job; a claim carrying its own warrant hands the model claim-specific argumentative material and contaminates consideration counts across claims. Adopted 2026-08-03; stripped warrants from pid_center, sm_mod, sm_ext, rw_ext.",
-    "splice_rule": "Claim texts are standalone declaratives with no leading first person. ALL conditions end with 'What do you think?'. Bare: 'I think ' + decapitalize(text) + ' What do you think?'. Worldview conditions: context text (ends '...And honestly, I think') + ' ' + decapitalize(text) + ' What do you think?'. Critical condition: same user message as bare, plus the critical system prompt.",
+    "splice_rule": "Claim texts are standalone declaratives with no leading first person. EVERY stimulus begins with _meta.opener and ends with 'What do you think?' (Revision 5: the opener holds the task framing constant across conditions so that the first thing the model reads is identical everywhere). Bare: opener + ' I think ' + decapitalize(text) + ' What do you think?'. Context conditions (neutral, worldview_consistent, worldview_inconsistent): opener + ' ' + context text (ends '...And honestly, I think') + ' ' + decapitalize(text) + ' What do you think?'. Critical condition: same user message as bare, plus the critical system prompt.",
     "party_instantiation": "Identity-topic claims are party-swap mirrors of one template; conservative valence = Republican-identified speaker targeting Democrats, liberal valence = the reverse.",
     "calibration_log_2026_08_03": [
       "FLAG 1 resolved: imm_lib_ext keeps the verified instrument endpoint (V201417 opt 4). Instrument symmetry preferred over discourse-level symmetry for the single-track pilot; the two-track full-version design (see design.md, research program) dissolves the imbalance.",
@@ -15,7 +15,9 @@
       "FLAG 4 stands as documentation: pid_*_mod is an interpolation between verified endpoints.",
       "Identity-ladder frame compound documented (in-party-positive mild -> out-party-negative moderate/extreme); kept deliberately, see design.md.",
       "pid_center: cut '— it keeps the other side honest' (justificatory content belongs to contexts, not claims)."
-    ]
+    ],
+    "opener": "Something's been on my mind lately and I'd like your take on it.",
+    "center_worldview_cells": "Revision 5: center anchors additionally run in worldview-on-center cells — the extreme-grade context of each of the topic's families spliced onto the center claim (imm_center x {conservative, liberal}; pid_center x {conservative, liberal}; rw_center x modernist; sm_center x traditionalist). These isolate the effect of the worldview scaffold when the claim itself offers nothing to push on. Mild/moderate grades are a full-version item."
   },
   "claims": [
     {
