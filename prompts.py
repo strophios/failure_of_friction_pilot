@@ -1,6 +1,6 @@
 """Prompt construction and response collection for the failure-of-friction pilot.
 
-Design: design.md (Revision 5). Stimuli: claims.json + contexts.json.
+Design: design.md (Revision 7). Stimuli: claims.json + contexts.json.
 
 Assembly rules (from the stimulus files' _meta). Every user message begins with
 the shared OPENER (claims.json _meta.opener) followed by a single space:
@@ -12,6 +12,10 @@ the shared OPENER (claims.json _meta.opener) followed by a single space:
                            matched extremity
   - worldview_inconsistent: same, with the OPPOSITE family at matched extremity
                            (a probe, run only with --probe-inconsistent, 1 replication)
+  - slot_belief | slot_affect | slot_identity: the claim's consistent family at the
+                           EXTREME grade with the named slot swapped for the neutral
+                           family's extreme-grade sentence (extreme factorial claims only;
+                           8 claims; part of the full run)
   - bare_noopener:         "I think " + decap(claim) + " What do you think?" (no opener,
                            no system prompt; --opener-check only, not in the full run)
   - center_worldview_<family>_<grade>: center anchor claim with the <grade> (mild |
@@ -22,14 +26,14 @@ Design decisions encoded here (see design.md for rationale):
   - Bare API baseline: no tools, no sampling-parameter overrides. Replication
     variance comes from default sampling. Thinking is left at the model default
     (adaptive on the current Sonnet) -- the baseline is "the model as it ships."
-  - Factorial claims run bare/neutral/worldview_consistent/critical (18 x 4 = 72
-    cells); center anchors run bare + critical (8) plus 12 center_worldview cells
-    (6 families-on-topic x {mild, extreme}).
-    Full run = 92 cells (460 responses at 5 replications); the inconsistent probe
-    adds 18 cells x 1 replication (110 cells / 478).
+  - Factorial claims (24) run bare/neutral/worldview_consistent/critical (96 cells);
+    center anchors (4) run bare + critical (8) plus 16 center_worldview cells
+    (8 families-on-topic x {mild, extreme}); the 8 extreme factorial claims also run
+    the 3 slot_* conditions (24 cells). Full run = 144 cells (720 responses at 5
+    replications); the inconsistent probe adds 24 cells x 1 replication (168 / 744).
   - Runs are resumable: existing response files are skipped.
   - Responses are keyed by stimulus version AND model: new responses go to
-    responses/v<STIMULUS_VERSION>/<model>/ (e.g. responses/v0.4/claude-sonnet-5-5/).
+    responses/v<STIMULUS_VERSION>/<model>/ (e.g. responses/v0.5/claude-sonnet-5-5/).
     v0.2 (no opener) lives in responses/v0.2/claude-sonnet-5/.
   - A refusal is a data point, recorded like any other response (stop_reason,
     stop_details); the thinking/refusal fields are recorded, never requested.
@@ -37,10 +41,11 @@ Design decisions encoded here (see design.md for rationale):
 Usage:
   python prompts.py --dry-run                 # print assembled prompts, no API calls
   python prompts.py --pre-pilot-2             # the 8-cell pre-pilot-2 run (1 replication)
-  python prompts.py                           # full run (92 cells x N replications)
+  python prompts.py                           # full run (144 cells x N replications)
   python prompts.py --opener-check            # 4 cells x 3 reps: bare vs bare_noopener (12 responses)
-  python prompts.py --mild-center             # the 6 center_worldview_*_mild cells, 1 rep (pre-pilot 3)
-  python prompts.py --probe-inconsistent      # full run PLUS the inconsistent probe (+18 cells x 1)
+  python prompts.py --mild-center             # the 8 center_worldview_*_mild cells, 1 rep
+  python prompts.py --slot-sample              # the 3 slot variants on imm_con_ext and rw_ext, 1 replication (6)
+  python prompts.py --probe-inconsistent      # full run PLUS the inconsistent probe (+24 cells x 1)
   python prompts.py --replications 5          # set N (default 5)
   python prompts.py --make-coding-sheet       # blind coding sheet (prompt-visible, condition-hidden)
       [--include-run v0.2/claude-sonnet-5 --include-run v0.3/claude-sonnet-5-5]
@@ -71,8 +76,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).parent
 RESPONSES_ROOT = ROOT / "responses"
-STIMULUS_VERSION = "0.4"  # 0.2 = no opener (pre-pilot 1); 0.3 = shared opener, neutral family (pre-pilot 2);
-# 0.4 = pid_*_mod "never held power again" (Revision 6)
+# 0.2 = no opener (pre-pilot 1); 0.3 = shared opener, neutral family (pre-pilot 2);
+# 0.4 = pid_*_mod "never held power again" (Revision 6);
+# 0.5 = Revision 7 stimuli: neutral redraft, extreme-context rewrites, bipolar
+# baselines (rw_in_*, sm_pos_*), pid mod/ext swap.
+STIMULUS_VERSION = "0.5"
 DEFAULT_SHEET_NAME = "coding_sheet.csv"
 
 # design.md Path C: behavioral pilot on Sonnet for cost. Both pre-pilots ran on
@@ -95,6 +103,9 @@ CONDITION_INCONSISTENT = "worldview_inconsistent"  # probe only (--probe-inconsi
 CONDITION_NOOPENER = "bare_noopener"  # --opener-check only
 CENTER_WORLDVIEW_PREFIX = "center_worldview_"
 CENTER_GRADES = ["mild", "extreme"]
+SLOT_CONDITIONS = {"slot_belief": "belief", "slot_affect": "affect", "slot_identity": "identity"}
+SLOTS = ("belief", "affect", "identity")
+CONTEXT_LEAD_IN = " And honestly, I think"
 OPENER_CHECK_CELLS = [
     ("imm_con_ext", "bare"), ("imm_con_ext", CONDITION_NOOPENER),
     ("sm_mod", "bare"), ("sm_mod", CONDITION_NOOPENER),
@@ -115,15 +126,14 @@ CODING_COLUMNS = [
     "D", "D_engaged", "D_context", "D_context_engaged",
     "C_labels",
     "M_own_pro", "M_assert_pro", "M_own_con", "M_assert_con",
-    "F_lex", "F_lex_turn", "F_struct", "F_struct_ctx",
-    "Q_types", "Q_closing",
-    "E_bothsides", "E_reflect", "E_validate", "E_refuse",
-    "R_refusal", "R_stance_decline", "R_safety", "R_boilerplate", "R_factual_error",
+    "F_lex", "F_struct_claim", "F_struct_context",
+    "E_validate", "R_refusal", "R_stance_decline", "S_attrib",
     "borderline", "notes",
 ]
 # Counts derived from C_labels at join time (never hand-entered).
 DERIVED_COLUMNS = [
     "C_pro", "C_con", "C_neutral", "C_total",
+    "C_claim_pro", "C_claim_con",
     "C_pos_pro", "C_pos_con", "C_cond_n", "C_steel_n", "C_fit_any",
 ]
 SHEET_PREFIX_COLUMNS = ["response_id", "prompt_system", "prompt_user", "response_text"]
@@ -144,7 +154,7 @@ PRE_PILOT_CELLS = [
     ("pid_center", "critical"),
 ]
 
-# Pre-pilot 2 (stimulus v0.3): exercises the opener, the neutral family, and the
+# Pre-pilot 2 (stimulus v0.3 -- historical record; these stimuli were since revised): exercises the opener, the neutral family, and the
 # worldview-on-center cells. 1 replication each.
 PRE_PILOT_2_CELLS = [
     ("imm_con_ext", "neutral"),
@@ -159,15 +169,19 @@ PRE_PILOT_2_CELLS = [
 
 
 def load_stimuli() -> tuple[dict, dict]:
+    """Return (claims by id, contexts by (family, extremity) -> context dict)."""
     claims_file = json.loads((ROOT / "claims.json").read_text())
     assert claims_file["_meta"]["opener"] == OPENER, (
         "OPENER constant differs from claims.json _meta.opener"
     )
     claims = {c["id"]: c for c in claims_file["claims"]}
-    contexts = {
-        (t["family"], t["extremity"]): t["text"]
-        for t in json.loads((ROOT / "contexts.json").read_text())["contexts"]
-    }
+    contexts = {}
+    for t in json.loads((ROOT / "contexts.json").read_text())["contexts"]:
+        joined = " ".join(t["slots"][k] for k in SLOTS) + CONTEXT_LEAD_IN
+        assert joined == t["text"], (
+            f"context {t['family']}/{t['extremity']}: text != joined slots + lead-in"
+        )
+        contexts[(t["family"], t["extremity"])] = t
     return claims, contexts
 
 
@@ -203,6 +217,16 @@ def assemble(claim: dict, condition: str, contexts: dict) -> dict:
         family, _, extremity = condition[len(CENTER_WORLDVIEW_PREFIX):].rpartition("_")
         if extremity not in CENTER_GRADES:
             raise ValueError(f"bad center_worldview condition: {condition}")
+    elif condition in SLOT_CONDITIONS:
+        if claim["role"] != "factorial" or claim["extremity"] != "extreme":
+            raise ValueError(
+                f"{condition} is defined only for extreme factorial claims, not {claim['id']}"
+            )
+        slots = dict(contexts[(claim["consistent_context_family"], "extreme")]["slots"])
+        slot = SLOT_CONDITIONS[condition]
+        slots[slot] = contexts[("neutral", "extreme")]["slots"][slot]
+        context_text = " ".join(slots[k] for k in SLOTS) + CONTEXT_LEAD_IN
+        return {"user": f"{OPENER} {context_text} {tail}", "system": None}
     elif condition == "neutral":
         family = "neutral"
         extremity = claim["extremity"]
@@ -217,7 +241,7 @@ def assemble(claim: dict, condition: str, contexts: dict) -> dict:
         extremity = claim["extremity"]  # matched-extremity rule
     else:
         raise ValueError(f"unknown condition: {condition}")
-    context_text = contexts[(family, extremity)]
+    context_text = contexts[(family, extremity)]["text"]
     return {"user": f"{OPENER} {context_text} {tail}", "system": None}
 
 
@@ -230,6 +254,12 @@ def build_cells(claims: dict, args: argparse.Namespace) -> list[tuple[dict, str,
             (claims[cid], cond, OPENER_CHECK_REPLICATIONS)
             for cid, cond in OPENER_CHECK_CELLS
         ]
+    if args.slot_sample:
+        return [
+            (claims[cid], cond, 1)
+            for cid in ("imm_con_ext", "rw_ext")
+            for cond in SLOT_CONDITIONS
+        ]
     if args.mild_center:
         return [
             (claim, f"{CENTER_WORLDVIEW_PREFIX}{fam}_mild", 1)
@@ -240,7 +270,9 @@ def build_cells(claims: dict, args: argparse.Namespace) -> list[tuple[dict, str,
     cells = []
     for claim in claims.values():
         if claim["role"] == "factorial":
-            conds = CONDITIONS_FACTORIAL
+            conds = CONDITIONS_FACTORIAL + (
+                list(SLOT_CONDITIONS) if claim["extremity"] == "extreme" else []
+            )
         else:
             conds = CONDITIONS_ANCHOR + [
                 f"{CENTER_WORLDVIEW_PREFIX}{fam}_{grade}"
@@ -446,6 +478,9 @@ def make_coding_sheet(args: argparse.Namespace) -> None:
             ).hexdigest()[:10]
             records.append((opaque, r, version, model, f"{run_path}/{path.name}"))
 
+    tags_file = ROOT / "probe_tags.json"  # optional audit output; absent is fine
+    probe_tags = json.loads(tags_file.read_text()) if tags_file.exists() else {}
+
     random.Random(20260803).shuffle(records)  # fixed seed: reproducible blind order
 
     with open(sheet_path, "w", newline="") as f:
@@ -467,12 +502,16 @@ def make_coding_sheet(args: argparse.Namespace) -> None:
         w.writerow(
             [
                 "response_id", "claim_id", "condition", "replication",
-                "stimulus_version", "model", "file",
+                "stimulus_version", "model", "probe_tag", "file",
             ]
         )
         for opaque, r, version, model, name in records:
             w.writerow(
-                [opaque, r["claim_id"], r["condition"], r["replication"], version, model, name]
+                [
+                    opaque, r["claim_id"], r["condition"], r["replication"], version, model,
+                    probe_tags.get(r["claim_id"], "") if r["condition"] == CONDITION_INCONSISTENT else "",
+                    name,
+                ]
             )
 
     print(
@@ -484,6 +523,7 @@ def make_coding_sheet(args: argparse.Namespace) -> None:
 
 _C_ENTRY = re.compile(
     r"^(?P<label>.+?) \[(?P<valence>pro|con|neu)\] @(?P<target>position|self|outgroup|values|fit)"
+    r" \{(?P<sign>[+\-\u22120])\}"
     r"(?P<tags>(?:\s*\((?:cond|implied|steel)\))*)$"
 )
 
@@ -493,18 +533,21 @@ def parse_c_labels(text: str, response_id: str = "") -> list[dict]:
     printed WARNING naming response_id when given
     (never silently).
 
-    Entries are separated by " | "; each is `label text [pro|con|neu] @target`,
-    optionally followed by tags (cond), (implied), (steel).
+    Entries are separated by " | "; each is
+    `label text [pro|con|neu] @target {+|-|0} (tags)` where target is one of
+    position, self, outgroup, values, fit; {sign} is the claim-bearing sign
+    (+ supports the claim, - opposes it, 0 neither) and is REQUIRED; tags are
+    optional and any of (cond), (implied), (steel). A unicode minus is read as -.
 
     >>> parse_c_labels("")
     []
-    >>> e = parse_c_labels("fiscal cost [con] @position (cond) | shared values [pro] @fit")
-    >>> [(x["valence"], x["target"], x["tags"]) for x in e]
-    [('con', 'position', ['cond']), ('pro', 'fit', [])]
-    >>> parse_c_labels("steelman [pro] @position (implied) (steel)")[0]["tags"]
+    >>> e = parse_c_labels("fiscal cost [con] @position {-} (cond) | shared values [pro] @fit {0}")
+    >>> [(x["valence"], x["target"], x["sign"], x["tags"]) for x in e]
+    [('con', 'position', '-', ['cond']), ('pro', 'fit', '0', [])]
+    >>> parse_c_labels("steelman [pro] @position {+} (implied) (steel)")[0]["tags"]
     ['implied', 'steel']
-    >>> parse_c_labels("no valence @position")
-    WARNING: malformed C_labels entry skipped: 'no valence @position'
+    >>> parse_c_labels("no sign [pro] @position")
+    WARNING: malformed C_labels entry skipped: 'no sign [pro] @position'
     []
     """
     entries = []
@@ -522,6 +565,7 @@ def parse_c_labels(text: str, response_id: str = "") -> list[dict]:
                 "label": m["label"],
                 "valence": m["valence"],
                 "target": m["target"],
+                "sign": m["sign"].replace("\u2212", "-"),
                 "tags": re.findall(r"\((\w+)\)", m["tags"]),
             }
         )
@@ -530,10 +574,16 @@ def parse_c_labels(text: str, response_id: str = "") -> list[dict]:
 
 def derive_c_counts(entries: list[dict]) -> list[int]:
     """Counts in DERIVED_COLUMNS order from parsed C_labels entries."""
-    n = lambda v: sum(e["valence"] == v for e in entries)  # noqa: E731  # tiny local helper
+    def n(v):
+        return sum(e["valence"] == v for e in entries)
+
+    def sgn(g):
+        return sum(e["sign"] == g for e in entries)
+
     pos = [e for e in entries if e["target"] == "position"]
     return [
         n("pro"), n("con"), n("neu"), len(entries),
+        sgn("+"), sgn("-"),
         sum(e["valence"] == "pro" for e in pos), sum(e["valence"] == "con" for e in pos),
         sum("cond" in e["tags"] for e in entries),
         sum("steel" in e["tags"] for e in entries),
@@ -609,6 +659,11 @@ def main() -> None:
         action="store_true",
         help="run bare vs bare_noopener on imm_con_ext and sm_mod, 3 replications "
         "(12 responses)",
+    )
+    parser.add_argument(
+        "--slot-sample",
+        action="store_true",
+        help="run the three slot-substitution variants on imm_con_ext and rw_ext, 1 replication (6 responses; pre-pilot 3)",
     )
     parser.add_argument(
         "--mild-center",
