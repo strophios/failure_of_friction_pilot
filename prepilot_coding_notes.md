@@ -49,7 +49,6 @@ Responding to the model as we develop the schema:
 
 # Notes with `prepilot2_coding_sheet.csv`
 
-- 
 - Should the M dimension actually be universally applicable? Like, I can certainly imagine being interested in whether a model owns or is assertive in its agreement, not just its pushback. 
     - Relatedly, while I'm still early in this round of coding, I'm very much keeping an eye on how useful `M_form_mixed` seems, since I can imagine it being extremely easy to wind up just being incidentally true for a lot of responses. 
 - For `F_lex`, is "mention" strictly a quote? like, how would we count "while, control theater may sometimes happen, I don't think it's a meaningful phenomenon"?

@@ -1,6 +1,6 @@
 {
   "claim_id": "imm_center",
-  "condition": "center_worldview_conservative",
+  "condition": "center_worldview_conservative_extreme",
   "replication": 1,
   "topic": "immigration",
   "topic_type": "policy",

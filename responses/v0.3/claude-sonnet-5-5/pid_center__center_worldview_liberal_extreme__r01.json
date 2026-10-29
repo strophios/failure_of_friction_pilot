@@ -1,6 +1,6 @@
 {
   "claim_id": "pid_center",
-  "condition": "center_worldview_liberal",
+  "condition": "center_worldview_liberal_extreme",
   "replication": 1,
   "topic": "party_identity",
   "topic_type": "identity",
