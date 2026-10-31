@@ -316,26 +316,28 @@ This is the core analytic logic: A predicts a main effect of extremity; B predic
 ### File organization
 ```
 failure_of_friction_pilot/          # standalone repo (~/failure_of_friction_pilot)
-├── design.md               # This document (canonical copy lives in the repo)
-├── claims.json             # Stimulus claims with topic, valence, extremity, source anchor
-├── contexts.json           # Worldview contexts (valence × extremity-graded; baseline stance-clusters; neutral family)
+├── README.md  design.md    # Overview; this document (canonical copy lives in the repo)
 ├── coding_rules.md         # The judge brief: rules, anchors, worked examples (what coders see)
 ├── coding_schema.md        # Schema rationale: measurement principle, calibration records, protocol, amendment log
-├── loaded_terms.json       # Pre-registered loaded-term lists per claim and per context (F_lex)
-├── frames.json             # Pre-registered frame statements per claim and per context (F_struct_claim / F_struct_context)
-├── probe_tags.json         # Inconsistent-probe pairs tagged clean-mismatch / plausibly-coherent (gate subset)
 ├── analysis_backlog.md     # Post-hoc coding, exploratory analyses, and design ideas kept out of the registered sheet
-├── reviews/                # Adversarial reviews of Revision 6 / v0.4 and their reconciliation; v0.5 stimulus audit
+├── prompts.py              # Prompt construction + API calling + coding-sheet build/join
+├── stimuli/
+│   ├── claims.json         # Stimulus claims with topic, valence, extremity, source anchor
+│   ├── contexts.json       # Worldview contexts (valence × extremity-graded; baseline stance-clusters; neutral family)
+│   ├── loaded_terms.json   # Pre-registered loaded-term lists per claim and per context (F_lex)
+│   ├── frames.json         # Pre-registered frame statements per claim and per context (F_struct_claim / F_struct_context)
+│   └── probe_tags.json     # Inconsistent-probe pairs tagged clean-mismatch / plausibly-coherent (gate subset)
+├── coding/
+│   ├── prepilot_coding_notes.md  # Hand-coding notes spanning the three pre-pilots
+│   ├── prepilot1/          # Coding sheet + key as generated; hand codes on v0.2 (prepilot_coding_sheet_01.csv)
+│   ├── prepilot2/          # Hand codes on v0.3 (prompt-visible), key, LLM codings, critiques, label alignment, synthesis
+│   └── prepilot3/          # Sheet + key, judge codes and notes (Opus 5.5, Sonnet 5.5), human-subset list
+├── responses/              # Raw model responses, v<stimulus>/<model>/ (one file per prompt × replication)
+├── reviews/                # Adversarial reviews of Revision 6 / v0.4, reconciliation, v0.5 audit, reorganization proposal
 ├── reference/              # Anchor-item scan (ANES/GSS/affective-polarization), literature notes
-├── prompts.py              # Prompt construction + API calling
-├── responses/              # Raw model responses (one file per prompt × replication)
-├── prepilot_coding_notes.md    # Pre-pilot 1: where the schema wobbled
-├── prepilot_coding_sheet_01.csv # Pre-pilot 1: hand codes on v0.2
-├── prepilot2_coding_sheet.csv   # Pre-pilot 2: hand codes on v0.3 (prompt-visible)
-├── prepilot2/              # Pre-pilot 2: LLM codings, critiques, label alignment, synthesis
-├── coding.csv              # Multi-dimensional coding scores
-├── analysis.py             # Analysis script
-└── findings.md             # Preliminary writeup
+├── coding.csv              # Multi-dimensional coding scores (planned)
+├── analysis.py             # Analysis script (planned)
+└── findings.md             # Preliminary writeup (planned)
 ```
 
 ---

@@ -1,6 +1,6 @@
 """Prompt construction and response collection for the failure-of-friction pilot.
 
-Design: design.md (Revision 7). Stimuli: claims.json + contexts.json.
+Design: design.md (Revision 7). Stimuli: stimuli/claims.json + stimuli/contexts.json.
 
 Assembly rules (from the stimulus files' _meta). Every user message begins with
 the shared OPENER (claims.json _meta.opener) followed by a single space:
@@ -51,7 +51,8 @@ Usage:
       [--include-run v0.2/claude-sonnet-5 --include-run v0.3/claude-sonnet-5-5]
                                                         # pool runs, each v<version>/<model> under
                                                         # responses/ (default: current version + --model)
-      [--sheet-name prepilot2_coding_sheet.csv]         # key -> prepilot2_coding_sheet_key.csv
+      [--sheet-name prepilot3/prepilot3_coding_sheet.csv]  # path relative to coding/;
+                                                        # key -> prepilot3_coding_sheet_key.csv beside it
   python prompts.py --join-coding [--sheet-name ...]    # merge sheet + key into coding.csv;
                                               # also derives C_pro/C_con/C_neutral/C_total,
                                               # C_pos_pro/C_pos_con, C_cond_n, C_steel_n, C_fit_any
@@ -76,12 +77,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).parent
 RESPONSES_ROOT = ROOT / "responses"
+STIMULI_ROOT = ROOT / "stimuli"
+CODING_ROOT = ROOT / "coding"
 # 0.2 = no opener (pre-pilot 1); 0.3 = shared opener, neutral family (pre-pilot 2);
 # 0.4 = pid_*_mod "never held power again" (Revision 6);
 # 0.5 = Revision 7 stimuli: neutral redraft, extreme-context rewrites, bipolar
 # baselines (rw_in_*, sm_pos_*), pid mod/ext swap.
 STIMULUS_VERSION = "0.5"
-DEFAULT_SHEET_NAME = "coding_sheet.csv"
+DEFAULT_SHEET_NAME = "prepilot1/coding_sheet.csv"  # relative to coding/
 
 # design.md Path C: behavioral pilot on Sonnet for cost. Both pre-pilots ran on
 # claude-sonnet-5; the full run uses claude-sonnet-5-5 (current Sonnet).
@@ -170,13 +173,13 @@ PRE_PILOT_2_CELLS = [
 
 def load_stimuli() -> tuple[dict, dict]:
     """Return (claims by id, contexts by (family, extremity) -> context dict)."""
-    claims_file = json.loads((ROOT / "claims.json").read_text())
+    claims_file = json.loads((STIMULI_ROOT / "claims.json").read_text())
     assert claims_file["_meta"]["opener"] == OPENER, (
         "OPENER constant differs from claims.json _meta.opener"
     )
     claims = {c["id"]: c for c in claims_file["claims"]}
     contexts = {}
-    for t in json.loads((ROOT / "contexts.json").read_text())["contexts"]:
+    for t in json.loads((STIMULI_ROOT / "contexts.json").read_text())["contexts"]:
         joined = " ".join(t["slots"][k] for k in SLOTS) + CONTEXT_LEAD_IN
         assert joined == t["text"], (
             f"context {t['family']}/{t['extremity']}: text != joined slots + lead-in"
@@ -423,10 +426,11 @@ def run(args: argparse.Namespace) -> None:
 
 def sheet_paths(sheet_name: str) -> tuple[Path, Path, Path]:
     """(sheet, key, coded-output) paths for a sheet name. The default sheet name
-    keeps the original coding_key.csv / coding.csv names."""
-    sheet = ROOT / sheet_name
+    keeps the original coding_key.csv / coding.csv names. sheet_name is relative
+    to coding/; key and coded output live beside the sheet."""
+    sheet = CODING_ROOT / sheet_name
     if sheet_name == DEFAULT_SHEET_NAME:
-        return sheet, ROOT / "coding_key.csv", ROOT / "coding.csv"
+        return sheet, sheet.with_name("coding_key.csv"), sheet.with_name("coding.csv")
     return (
         sheet,
         sheet.with_name(f"{sheet.stem}_key.csv"),
@@ -478,7 +482,7 @@ def make_coding_sheet(args: argparse.Namespace) -> None:
             ).hexdigest()[:10]
             records.append((opaque, r, version, model, f"{run_path}/{path.name}"))
 
-    tags_file = ROOT / "probe_tags.json"  # optional audit output; absent is fine
+    tags_file = STIMULI_ROOT / "probe_tags.json"  # optional audit output; absent is fine
     probe_tags = json.loads(tags_file.read_text()) if tags_file.exists() else {}
 
     random.Random(20260803).shuffle(records)  # fixed seed: reproducible blind order
@@ -706,7 +710,8 @@ def main() -> None:
     parser.add_argument(
         "--sheet-name",
         default=DEFAULT_SHEET_NAME,
-        help="coding sheet filename; key is <stem>_key.csv (default keeps coding_key.csv)",
+        help="coding sheet path relative to coding/; key is <stem>_key.csv beside it "
+        "(default prepilot1/coding_sheet.csv keeps coding_key.csv)",
     )
     args = parser.parse_args()
 
