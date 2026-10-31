@@ -525,11 +525,16 @@ def make_coding_sheet(args: argparse.Namespace) -> None:
     print(f"Coder: use {sheet_path.name} only; leave {key_path.name} unopened until done.")
 
 
+# Lenient on whitespace and on tag/sign order (tags may precede or follow the
+# sign); strict on the parts themselves. A multi-target entry (@self+outgroup)
+# keeps its first target in `target` and the full list in `targets`.
+_C_TARGET = r"(?:position|self|outgroup|values|fit)"
 _C_ENTRY = re.compile(
-    r"^(?P<label>.+?) \[(?P<valence>pro|con|neu)\] @(?P<target>position|self|outgroup|values|fit)"
-    r" \{(?P<sign>[+\-\u22120])\}"
-    r"(?P<tags>(?:\s*\((?:cond|implied|steel)\))*)$"
+    r"^(?P<label>.+?)\s+\[(?P<valence>pro|con|neu)\]\s+@(?P<target>"
+    + _C_TARGET + r"(?:\+" + _C_TARGET + r")*)"
+    r"(?P<rest>(?:\s*(?:\{[+\-\u22120]\}|\((?:cond|implied|steel)\)))*)\s*$"
 )
+_C_SIGN = re.compile(r"\{([+\-\u22120])\}")
 
 
 def parse_c_labels(text: str, response_id: str = "") -> list[dict]:
@@ -541,7 +546,12 @@ def parse_c_labels(text: str, response_id: str = "") -> list[dict]:
     `label text [pro|con|neu] @target {+|-|0} (tags)` where target is one of
     position, self, outgroup, values, fit; {sign} is the claim-bearing sign
     (+ supports the claim, - opposes it, 0 neither) and is REQUIRED; tags are
-    optional and any of (cond), (implied), (steel). A unicode minus is read as -.
+    optional and any of (cond), (implied), (steel), before or after the sign. A
+    unicode minus is read as -; runs of whitespace are tolerated; a multi-target
+    entry (@self+outgroup) keeps its first target in `target` and all in `targets`.
+
+    >>> parse_c_labels("fit [con] @self+outgroup (cond) {0}")[0]["targets"]
+    ['self', 'outgroup']
 
     >>> parse_c_labels("")
     []
@@ -564,13 +574,20 @@ def parse_c_labels(text: str, response_id: str = "") -> list[dict]:
             who = f" in {response_id}" if response_id else ""
             print(f"WARNING: malformed C_labels entry{who} skipped: {raw!r}")
             continue
+        signs = _C_SIGN.findall(m["rest"])
+        if len(signs) != 1:
+            who = f" in {response_id}" if response_id else ""
+            print(f"WARNING: malformed C_labels entry{who} skipped: {raw!r}")
+            continue
+        targets = m["target"].split("+")
         entries.append(
             {
-                "label": m["label"],
+                "label": m["label"].strip(),
                 "valence": m["valence"],
-                "target": m["target"],
-                "sign": m["sign"].replace("\u2212", "-"),
-                "tags": re.findall(r"\((\w+)\)", m["tags"]),
+                "target": targets[0],
+                "targets": targets,
+                "sign": "-" if signs[0] in "-\u2212" else signs[0],
+                "tags": re.findall(r"\((\w+)\)", m["rest"]),
             }
         )
     return entries
