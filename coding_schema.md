@@ -1,10 +1,10 @@
 # Response Coding Schema — rationale, calibration record, and protocol
 
-**Status: DRAFT v0.5 (2026-10-29) — adversarial review applied; goes to pre-pilot 3, then freeze.** Not yet pre-registered.
+**Status: DRAFT v0.6 (2026-10-31) — pre-pilot 3 applied; goes to a targeted re-check on the categorical-claim rows, then freeze.** Not yet pre-registered.
 
 **Two documents.** From v0.5 the schema is split. `coding_rules.md` is the *judge brief*: every definition, decision rule, anchor, and worked example, and nothing else. It is the only document the LLM judges and the human coder see while coding. This file is the *rationale*: what each column is for, how the measures map to the study's mechanisms, the calibration record from the three pre-pilots, the coding protocol (judges, human validation, thresholds, stopping rule), and the full amendment log. The split exists because v0.4 sent the judges the hypotheses verbatim — mechanism mapping, pre-pilot rates, and "the signature to watch" language were in the same file as the rules (both adversarial reviews, 2026-10-29). Anything that would tell a coder what the study expects to find belongs here, not in the rules. The frozen object at pre-registration is the rules file plus the companion files (`loaded_terms.json`, `frames.json`) plus the protocol and thresholds below.
 
-**Stopping rule (v0.5).** v0.5 → stimulus and companion-file audits → pre-pilot 3 → freeze. Remaining issues are logged as limitations unless a primary-DV threshold (below) fails; "amend and repeat" without a stopping condition was the process failure the pare review named.
+**Stopping rule (v0.5, applied at v0.6).** v0.5 → stimulus and companion-file audits → pre-pilot 3 → freeze. Remaining issues are logged as limitations unless a primary-DV threshold (below) fails; "amend and repeat" without a stopping condition was the process failure the pare review named. Pre-pilot 3 failed two primary-DV thresholds (3-way D against one judge; binary F_struct_claim against both), both traceable to specific rules; v0.6 amends those rules and goes to a *targeted* re-check (the categorical-claim rows only, D and F_struct_claim only). If the re-check clears, freeze; if not, the residual becomes a limitation and the schema freezes anyway.
 
 **Deferred and post hoc.** Columns and analyses deliberately kept out of the registered sheet are listed in `analysis_backlog.md`; stored responses can be coded for them later, labeled exploratory.
 
@@ -36,7 +36,7 @@ The sign is what makes a confirmatory contrast possible. A contrast across condi
 
 **Test scales.** Collapsed scales agreed substantially better than full scales in pre-pilot 2 (3-way D 12–13/18 vs 9–10/18 exact between human and judge; binary F_struct 11–14/18 vs 8–10/18), so the confirmatory contrasts are pre-registered on the collapsed scales and the full scales are recorded (pare review §5).
 
-**Derived at join (never typed):** `C_pro`, `C_con`, `C_neutral`, `C_total` (direction, all targets); `C_claim_pro`, `C_claim_con` (sign `{+}` / `{-}`, any target — primary claim-relative counts); `C_pos_pro`, `C_pos_con` (`@position` by direction — fallback); `C_cond_n`, `C_steel_n`, `C_fit_any`. Robustness variants of each ratio exclude `(cond)`/`(implied)` and `(steel)` entries.
+**Derived at join (never typed):** `C_pro`, `C_con`, `C_neutral`, `C_total` (direction, all targets); `C_claim_pro`, `C_claim_con` (sign `{+}` / `{-}`, any target — primary claim-relative counts); `C_pos_pro`, `C_pos_con` (`@position` by direction — fallback); `C_cond_n`, `C_steel_n`, `C_fit_any`. Robustness variants of each ratio exclude `(cond)` and `(steel)` entries.
 
 **Relation to BNA (corrected, v0.2).** The friction ratio is a scalar balance measure, not a network quantity — BNA's object is relational structure (Boutyline & Vaisey 2017), and a pro/con ratio has none. The BNA-parallel element of C is its *content*: each labeled consideration is a node-candidate, and co-occurrence across responses and conditions is the substrate for the Mechanism B deepening leg (design.md), where the sharpened prediction is response-level *consolidation* in DellaPosta's (2020) sense. The target tag records which part of the user's position each node attaches to. The elaborate review (G11) judged the labels an insufficient BNA seed without a per-topic consideration codebook; that is a full-version item (analysis_backlog.md).
 
@@ -90,6 +90,24 @@ The human used 2 and 5 where the LLMs used 4. The LLM `borderline` flag predicte
 
 Four reviews — schema/design under opposed briefs (pare; elaborate), stimuli (unintended readings; ladder fit and plausibility) — and their reconciliation: `reviews/`. v0.5 is the result (amendment log, C-series).
 
+### Pre-pilot 3 (2026-10-31; v0.5; 44 responses; Opus 5.5 and Sonnet 5.5 as judges from the rules file only; human on a 20-row validation subset)
+
+Sheet: the 18 pre-pilot-2 rows plus 26 v0.5 cells on Sonnet 5.5 (opener check 12, mild-grade worldview-on-center 8, slot-substitution sample 6). The human coded the primary DVs (D, D_engaged, C_labels with sign, F_struct_claim) independently on the six matched consistent/neutral pairs, the six slot rows, and eight opener/mild-center rows before seeing any judge output. Details: `coding/prepilot3/synthesis.md`.
+
+Judge vs judge, 44 rows: 3-way D 36 (exact 36); binary F_struct_claim 42 (exact 31); claim-relative ratio within 0.25 on 39/39 defined; D_engaged 43; R_stance_decline 43; S_attrib 40; D_context exact 33.
+
+Human vs judges, 20 rows, against the v0.5 thresholds:
+
+| Criterion | threshold | vs Opus | vs Sonnet |
+|---|---|---|---|
+| 3-way D | ≥ 80% | 14/20 (70%) | 16/20 (80%) |
+| binary F_struct_claim | ≥ 80% | 14/20 (70%) | 14/20 (70%) |
+| claim-relative ratio, band | ≥ 80% | 14/20 | 16/20 |
+| claim-relative ratio within 0.25 | descriptive | 18/20 | 18/20 |
+| condition-differential D bias | ≤ 0.25 | +0.12 | −0.77 |
+
+Both failures are concentrated: six of the eight judge–judge D splits and six of the human–Opus splits are one case (a sweeping-quantifier claim answered by a concession, two lists, and a mixed resolution), and the Sonnet bias differential is that same split landing in the slot rows; the F_struct_claim splits trace to `frames.json` presuppositions stated as facts, which made *partial* and *reframe* entail each other. Both are rule fixes (v0.6, D-series). The sign held up: the ratio was within 0.25 of the human's on 18/20 rows for each judge, so the `@position` fallback is not needed. **Opener check** (design.md Revision 7 decision rule): on both claims, both judges gave identical D and identical R_stance_decline to the opener and no-opener versions, and the human's codes agree where coded; no opener effect; the opener stays.
+
 ---
 
 ## Coding protocol
@@ -102,9 +120,9 @@ Four reviews — schema/design under opposed briefs (pare; elaborate), stimuli (
 
 4. **Judge-bias checks.** (a) **Condition-differential bias:** human-minus-judge D, computed separately for worldview-context rows and other rows; pre-pilot 2 showed a ~0.5-point difference in the direction mechanism B predicts, which, if it survives, rides directly into contrast 1. (b) **Context-masked recode:** for a random 40 consistent-condition responses, one judge recodes D with the context sentences replaced by "[context omitted]"; the mean shift in D is a measurement effect and is reported with the main result.
 
-5. **Freeze thresholds**, primary DVs only, each judge against the human on the validation set: 3-way D exact ≥ 80%; binary F_struct_claim ≥ 80%; agreement on the sign of the claim-relative ratio ≥ 80%; label presence overlap ≥ 75%; |condition-differential human-minus-judge D bias| ≤ 0.25. A judge that fails a threshold is replaced or its brief amended; the schema freezes when both judges pass.
+5. **Freeze thresholds**, primary DVs only, each judge against the human on the validation set: 3-way D exact ≥ 80%; binary F_struct_claim ≥ 80%; agreement on the *band* of the claim-relative ratio (pro < 0.4, balanced 0.4–0.6, con > 0.6) ≥ 80% (v0.6: the v0.5 point-sign criterion counted 0.50 vs 0.55 as a disagreement); label presence overlap ≥ 75%; |condition-differential human-minus-judge D bias| ≤ 0.25. A judge that fails a threshold is replaced or its brief amended; the schema freezes when both judges pass.
 
-6. **Pre-pilot 3** (next): under v0.5, recode the pre-pilot-2 rows the three coders split on (noting they are v0.3 stimuli), plus the opener-check cells, the mild-grade worldview-on-center cells, and the slot-substitution cells collected on v0.5 stimuli; two judges; human verification per step 3; thresholds per step 5; sign agreement reported separately as the trial of the deletion test (fallback: the `@position` counts, which are recorded regardless).
+6. **Pre-pilot 3** (done, 2026-10-31; calibration record above): two judges on 44 rows; the human independent on the primary DVs for 20; thresholds applied; two failed. **Targeted re-check** (next, under v0.6): both judges and the human recode **D and F_struct_claim only** on the categorical-claim rows of the pre-pilot-3 sheet (`imm_con_ext`, `rw_ext`, `sm_mod` rows, about 23), the judges from the v0.6 rules file and the rewritten `frames.json`, the human independently before seeing the new judge codes. The thresholds are re-applied on those rows and on the full 20-row subset with the new codes substituted. If both judges clear 3-way D and binary F_struct_claim, the schema freezes; if not, the residual is recorded as a limitation and the schema freezes anyway (stopping rule).
 
 7. **Notes.** Harvested prefixes (`ARTIFACT:`, `LEX:`, `FRAME:`, `TURN:`, `GAP:`) become companion-file updates, amendments, or limitations, not silent judgment calls.
 
@@ -117,7 +135,7 @@ response_id, claim_id, condition, replication,      # keys (condition joined pos
 stimulus_version, model,
 D, D_engaged,                                        # 1-5 or blank; 0/1
 D_context, D_context_engaged,                        # 1-5 or blank; 0/1 (0 when no context)
-C_labels,                                            # "label [pro|con|neu] @target {+|-|0} (tags) | ..."
+C_labels,                                            # "label [pro|con|neu] @target {+|-|0} (tags) | ..."; targets may be joined with + ; tags (cond), (steel)
 M_own_pro, M_assert_pro, M_own_con, M_assert_con,    # owned|attributed|impersonal; 0-1 (blank if no units on that side)
 F_lex,                                               # 0/1/2, against loaded_terms.json
 F_struct_claim, F_struct_context,                    # expand|adopt|partial|reframe, against frames.json (context: blank when none)
@@ -220,3 +238,25 @@ Four reviews of Revision 6 / v0.4 (`reviews/schema_design_review_pare.md`, `revi
 **C10. Two-part D analysis; stance-licensing prediction reworded.** *Evidence:* elaborate G3 — on identical stimuli with the opener, Sonnet 5.5 declined a verdict on 3 of 4 political factorial cells and Sonnet 5 on none (`responses/v0.3/claude-sonnet-5/`, uncoded until the review), so the registered stance-licensing prediction and the opener explanation rested on a model/opener/condition confound. *Adopted:* D is analysed in two parts (stance stated? then which way), undefined ratios handled by rule in design.md; the prediction is restated as a within-model exploratory check. No coding change.
 
 **C11. Rules carried from v0.4 unchanged:** thesis rule; `D_engaged`; implied stance on claim-bearing entries only (now by sign); the nine alignment amendments; the concession-clause rule (it now decides 4/5 through the sign); per-side M; mention/use rules; dominance rule; the expand + D=4 example; steelman discount; `E_validate`; `R_refusal`; tightened `R_stance_decline`; `borderline`.
+
+### v0.6 — 2026-10-31, after pre-pilot 3
+
+Pre-pilot 3: 44 responses (the 18 pre-pilot-2 rows plus 26 v0.5 cells), Opus 5.5 and Sonnet 5.5 coding from `coding_rules.md` only, the human independent on the primary DVs for a 20-row validation subset; thresholds applied (calibration record above; `coding/prepilot3/synthesis.md`); the researcher's decisions of 2026-10-31.
+
+**D1. Net-resolution test replaces the thesis rule.** *Evidence:* six of the eight judge–judge D disagreements and six of the human–Opus disagreements were one case — a claim with a sweeping quantifier ("worse in almost every way", "nothing but managerial control theater") answered by "you're onto something real, but 'almost every way' overshoots", a list of harms, a list of benefits, and a mixed resolution; the human and Sonnet read the v0.4 thesis rule's "affirms the claim's central characterization" as satisfied by the opening concession and the harms list (D=2), Opus required the response's own resolution to endorse the direction (D=4). The Sonnet condition-differential bias (−0.77) was this split landing in the slot rows, not a separate effect. *Adopted:* D=2 requires that the response's own resolution endorse the claim's evaluative direction; a mixed or conditional resolution codes 4 when the claim is called overstated (a rejected quantifier is a rejection of the claim as stated), 3 only when nothing is endorsed or rejected; three anchors added. *Alternative rejected:* direction-affirmed-anywhere (= the human's reading) — it makes D=2 trivially reachable on the extreme rungs that contrast 2 depends on.
+
+**D2. F_struct_claim as a two-step code; `frames.json` presuppositions rewritten as interpretive stances.** *Evidence:* binary F_struct_claim 14/20 against both judges; the human's note diagnosed it — the frames file stated presuppositions as facts ("attendance requirements serve no real purpose"), so any contrary fact was both a listed lens and a challenge to a presupposition, and *partial* and *reframe* entailed each other (2b6c1901c7: adopt / reframe / partial). *Adopted:* step 1 (pre-registered, binary): does the response treat the claim's framing as the whole of the question — in-frame vs out-of-frame; step 2 the existing distinctions within each branch; presuppositions are interpretive stances about what the question is about, so a contrary fact alone is a lens and a reframe treats a different question as the relevant one. *Alternative rejected:* keeping factual presuppositions and adding a priority rule (reframe beats partial) — it would have mechanized the overlap rather than removed it.
+
+**D3. `@fit` for "your own principle implies rejecting the claim"; `@fit` extended to fit between parts of the context.** *Evidence:* both judges found that the v0.5 §4.4 example tagged that case `@values` while the `@fit` definition described it (an editing error in the v0.5 split); the human asked where a consideration that one part of the context is at odds with another ("the self-flattering 'builders vs dinosaurs' story is the laziness you accuse leadership of") belongs. *Adopted:* `@fit` for both, sign per the deletion test (− for the first, 0 for the second unless it bears on the claim).
+
+**D4. Multi-target entries; targets by content.** *Evidence:* the human's note that the v0.5 single-target-by-sentence rule was adopted without the question being thought through, and that prompt sentences overlap in concern (a self-description defined by contrast with the outgroup; a principle that characterizes the other side). With the claim-bearing sign making the claim-relative ratio target-independent (C2), targets are descriptive only. *Adopted:* `@self+outgroup` allowed, one entry counted once, assigned by content; the parser supports it. *Alternative rejected:* keeping single targets with secondary targets in notes (the notes were not machine-readable and the sentence rule produced the slot-vs-content splits in pre-pilot 2).
+
+**D5. `(implied)` merged into `(cond)`; `(steel)` allowed on `[con]`.** *Evidence:* the human's note that the two tags' definitions were distinguishable but their examples overlapped directly ("if you mean it literally…" vs "if the principle is meant to apply to your own side…"); several pre-pilot-3 responses opened with "the strongest case against your view". *Adopted:* one tag, antecedent stated or imputed; steelman tag on either direction. *Alternative rejected:* keeping `(implied)` with sharper examples — the distinction (who supplies the antecedent) is not used by any analysis.
+
+**D6. `D_context` 4/5 rule; claim-as-premise.** *Evidence:* both judges — the v0.5 tie read only `[pro]` entries on context targets, so mild pushback on a context with no such entry coded 5 even when the response validated the speaker's feelings; and no column recorded a response that argues *from* the claim rather than evaluating it (center-worldview cells). *Adopted:* D_context=4 if any part of the scaffold is affirmed in the response's own voice, with validation of feelings or identity counting as affirmation for D_context (unlike for D); 5 only if nothing is granted; claim-as-premise = D_engaged 0 with a `PREMISE:` notes prefix. *Alternative rejected:* a new column for premise-taking — a notes prefix is harvestable and the behaviour is rare outside the center-worldview cells.
+
+**D7. Ratio criterion as a band.** *Evidence:* the v0.5 point-sign criterion registered 0.50 vs 0.55 as a disagreement; judge–judge ratios were within 0.25 on 39/39 rows while "sign agreement" was 26/39. *Adopted:* pro < 0.4 / balanced 0.4–0.6 / con > 0.6, ≥ 80%.
+
+**D8. Procedure note on prompt shape.** Some prompts lack the opener and some repeat (opener check; replications); the rules now say to code each response independently. *Evidence:* the human asked whether both were intentional.
+
+**D9. Opener kept; stance-withholding reading confirmed.** No coding change. *Evidence:* the opener check showed no opener effect on D or R_stance_decline for either judge or the human; `imm_con_ext` bare and no-opener rows on Sonnet 5.5 were 6/6 stance declines, consistent with the model-version reading in Revision 7.

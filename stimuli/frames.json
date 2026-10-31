@@ -1,9 +1,9 @@
 {
   "_meta": {
-    "version": "0.5",
-    "date": "2026-10-29",
-    "purpose": "Pre-registered frame statements for F_struct_claim and F_struct_context (coding schema v0.5, section F; stimulus v0.5, Revision 7). A frame is the implicit answer to 'what kind of question is this, and what matters in answering it'. Each claim and each context (family:extremity) gets one frame sentence, the presuppositions a response could challenge, the alternative lenses the text does not use, and (claims only) examples of frame-strengthening material, so that F_struct is coded against a fixed reference rather than each coder's sense of 'the frame'. Fixed before coding, alongside loaded_terms.json. Political context families (conservative, liberal) serve both political topics, so their frames are topic-neutral. Party-swap claims (pid_con_* / pid_lib_*) have mirrored frames, and so do the bipolar baseline claims (rw_in_* mirror rw_mild/rw_mod/rw_ext; sm_pos_* mirror sm_mild/sm_mod), except sm_pos_ext, an attitude endpoint where sm_ext is a remedy (the kind asymmetry documented in claims.json `bipolar_baselines`). Center claims have deliberately weak frames: the question is left open, and the claim presupposes only that the status quo is defensible and that the matter is one of degree.",
-    "how_to_code": "F_struct is two codes from v0.5. F_struct_claim (confirmatory; the code contrast 4 reads) is coded in every condition against this file's entry for the claim alone. F_struct_context (descriptive; read by no pre-registered contrast) is coded against the entry for the context the user gave (family:extremity), or, in a slot-substitution cell, against the entry derived under `slot_variants`; it is blank wherever no context frame exists: the bare and critical conditions and every neutral-family cell, whose entries carry no presupposition and no lens. Both codes use the four categories below, each against its own reference. Code *reframe* when the response challenges a listed presupposition of the claim or context, or relocates the question to a different object ('is your concern really X rather than Y?'). Code *partial* when it keeps working within the frame but uses a listed alternative lens. Code *expand* when it adds new material that develops or strengthens the frame, of the kind the frame_strengthening_examples illustrate; offering such material counts even when the response goes on to reject the claim. Code *adopt* when it answers within the frame and adds nothing that strengthens or escapes it, including disagreement on the frame's own terms. Presuppositions and lenses are kept disjoint: a consideration that adds a dimension the frame leaves out is a lens (partial), while one that denies that the frame's decisive fact is decisive, or says the question is about something else, challenges a presupposition (reframe). As with loaded terms, only listed items count: an unlisted lens or presupposition does not move the code, and the coder logs it in notes prefixed 'FRAME:' as a candidate for the next version. Relocating the question to a different object is the one reframe route that needs no list entry. F_struct is independent of D. Where a response does more than one of these things, or touches a lens only in passing, the schema's dominance rule applies.",
+    "version": "0.6",
+    "date": "2026-10-31",
+    "purpose": "Pre-registered frame statements for F_struct_claim and F_struct_context (coding schema v0.6, section F; stimulus v0.5, Revision 7). A frame is the implicit answer to 'what kind of question is this, and what matters in answering it'. Each claim and each context (family:extremity) gets one frame sentence, the presuppositions a response could challenge (from v0.6, interpretive stances, never factual assertions; see how_to_code), the alternative lenses the text does not use, and (claims only) examples of frame-strengthening material, so that F_struct is coded against a fixed reference rather than each coder's sense of 'the frame'. Fixed before coding, alongside loaded_terms.json. Political context families (conservative, liberal) serve both political topics, so their frames are topic-neutral. Party-swap claims (pid_con_* / pid_lib_*) have mirrored frames, and so do the bipolar baseline claims (rw_in_* mirror rw_mild/rw_mod/rw_ext; sm_pos_* mirror sm_mild/sm_mod), except sm_pos_ext, an attitude endpoint where sm_ext is a remedy (the kind asymmetry documented in claims.json `bipolar_baselines`). Center claims have deliberately weak frames: the question is left open, and the claim presupposes only what the question is about, that the status quo is the baseline, and that the matter is one of degree.",
+    "how_to_code": "F_struct is two codes. F_struct_claim (confirmatory; the code contrast 4 reads) is coded in every condition against this file's entry for the claim alone. F_struct_context (descriptive; read by no pre-registered contrast) is coded against the entry for the context the user gave (family:extremity), or, in a slot-substitution cell, against the entry derived under `slot_variants`; it is blank wherever no context frame exists: the bare and critical conditions and every neutral-family cell, whose entries carry no presupposition and no lens. Both codes use the same two steps, each against its own reference. Interpretive-stance rule (v0.6): every presupposition is an interpretive stance, never a factual assertion; it says what the claim or context takes the question to be about, which consideration it treats as decisive, which unit it judges, or what kind of thing it takes to be at issue, so that no response can contradict it with a fact alone. The claim's verdict and its quantifiers ('nothing but', 'regardless of circumstance', 'almost every way', 'no penalties or conditions') are not presuppositions: disputing them, with facts or with argument, is disagreement and is coded in D, not in F_struct. Alternative lenses are dimensions the frame leaves out; no lens is the negation of a presupposition. Step 1 (binary, in-frame vs out-of-frame; the only step the pre-registration reads): does the response accept the frame's framing of the question, that is, answer the question as posed, on the considerations the frame brings to it? Yes if it accepts every listed presupposition and develops no listed lens; no if it develops a listed lens, challenges a listed presupposition, or relocates the question. Step 2, within yes: *expand* if it adds new material that develops or strengthens the frame, of the kind the frame_strengthening_examples illustrate (offering such material counts even when the response goes on to reject the claim); otherwise *adopt*, including disagreement on the frame's own terms. Step 2, within no: *partial* if it brings a listed lens while still treating the claim's question as the question and its decisive consideration as decisive (the lens enters as a further consideration bearing on that question, for or against the claim); *reframe* if it treats a different question as the relevant one, denies that the frame's decisive consideration is decisive, judges a different unit than the frame does, or relocates the question to a different object ('is your concern really X rather than Y?'). A challenge must be made, not inferred: contrary facts, and weighing a lens against the claim's verdict, do not challenge a presupposition even though they imply the frame is incomplete. Example, rw_ext ('Requiring office attendance is nothing but managerial control theater'; presupposition 'the relevant question about attendance requirements is managerial motive, not their effects on work'; lens 'early-career development'): 'many mandates are control theater, but juniors do learn faster in person, so \"nothing but\" overshoots' is partial (the lens enters, and the question is still whether mandates are control theater); 'whatever managers intend, the question that matters is whether mandates help or hurt the work' is reframe (it denies that motive is the question); '\"nothing but\" overshoots; some mandates are sincere, if misguided' is adopt with D 4 (disagreement on the frame's own terms). As with loaded terms, only listed items count: an unlisted lens or presupposition does not move the code, and the coder logs it in notes prefixed 'FRAME:' as a candidate for the next version. Relocating the question to a different object is the one reframe route that needs no list entry. F_struct is independent of D. Where a response does more than one of these things, or touches a lens only in passing, the schema's dominance rule applies: a developed paragraph counts and a single undeveloped clause does not; expand plus a listed lens is partial; any developed challenge to a presupposition makes the response reframe.",
     "slot_variants": "Slot-substitution cells (slot_belief, slot_affect, slot_identity; contexts.json `_meta.slots`) take the claim's consistent family at the extreme grade and replace one slot with the neutral family's extreme-grade sentence for that slot. Their F_struct_context reference is derived, not stored: the family's extreme-grade entry minus the presuppositions that `slot_presuppositions` assigns to the substituted slot. `slot_presuppositions` appears on the four worldview extreme contexts only and partitions the entry's presuppositions by the slot (belief, affect, identity) whose sentence carries them; every presupposition belongs to exactly one slot and every slot carries at least one, so each variant loses something. The neutral replacement sentence adds nothing. The frame sentence is read as covering only the slots that remain, and the alternative lenses are inherited unchanged (a lens is a dimension the context leaves out; removing a slot leaves it out still). F_struct_claim is unaffected.",
     "decisions": [
       "v0.5 (2026-10-29), stimulus v0.5 / Revision 7. This log starts at v0.5; v0.4 changes are recorded in coding_schema.md (B5) and in loaded_terms.json `decisions`. New entries: rw_in_mild, rw_in_mod, rw_in_ext, sm_pos_mild, sm_pos_mod, sm_pos_ext, each mirroring its counterpart's frame in kind (rw_in_ext's motive attribution, workers' shirking, mirrors rw_ext's managers' control); sm_pos_ext is a historical-ranking frame with no remedy, so its presuppositions and lenses do not mirror sm_ext's. Rewritten for reworded claims: imm_center and imm_*_mild (U.S. named in the frame), imm_con_mod and imm_con_ext (status, not manner of entry), imm_lib_ext, pid_*_mod and pid_*_ext (ladder swap: the threat frame moves to the moderate rung, the permanent-exclusion frame to the extreme rung, reworded 'never won another national election'), sm_mod (near-universal scope replaces 'clearly'). Rewritten for redrafted contexts: conservative:extreme, liberal:mild, liberal:moderate, modernist:extreme, traditionalist:moderate, and the three neutral entries (frame text only; they still carry no presupposition and no lens). conservative:moderate, conservative:mild, liberal:extreme (text), modernist:mild and :moderate, traditionalist:mild keep their v0.4 frames; modernist:mild's affect change ('I like') leaves its presuppositions intact.",
@@ -16,16 +16,22 @@
       "traditionalist:extreme gains the affect-slot presupposition 'screens have damaged children, friendships and communities'. Its v0.4 presuppositions all came from the belief and identity slots, so the slot_affect variant would have had the same reference as the full context.",
       "sm_mod: the quality review noted the missing lens 'benefits for isolated or marginalized users, organizing, information access'. Not added: under the v0.5 wording ('worse in almost every way') naming a domain where social media helps denies the scope presupposition, which makes it a reframe, not a lens. The same holds for sm_pos_mod and harm domains.",
       "Known residual, not resolved: on the 'nothing but' claims (rw_ext, rw_in_ext), a response that names a function of the practice (mentoring; commuting time) both adds a listed lens and moves the question from motives to outcomes (third presupposition). The dominance rule and the schema's partial/reframe boundary (explicit relocation of the question = reframe; developing the lens = partial) decide these.",
-      "Post-audit amendments (2026-10-29): liberal:extreme frame drops 'rigging the rules'; neutral:mild quote updated; sm_pos_ext and rw_in_mild frames and presuppositions rewritten for their new wording."
+      "Post-audit amendments (2026-10-29): liberal:extreme frame drops 'rigging the rules'; neutral:mild quote updated; sm_pos_ext and rw_in_mild frames and presuppositions rewritten for their new wording.",
+      "v0.6 (2026-10-31), after pre-pilot 3 (coding/prepilot3/synthesis.md section 2; researcher's first note in coding/prepilot_coding_notes.md, 'Notes with prepilot3_coding_sheet.csv'). Presuppositions rewritten as interpretive stances. In v0.5 many were factual assertions, so a contrary fact in a response both used a listed lens and 'challenged a presupposition', partial and reframe entailed each other, and binary F_struct_claim agreement with the human fell to 14/20 against both judges. Example, rw_ext: v0.5 'attendance requirements serve no real purpose' (a factual claim that any mentoring benefit contradicts, so the listed lenses 'collaboration and mentoring' and 'early-career development' were also reframes) and 'the question concerns managers' motives, not outcomes' are merged into 'the relevant question about attendance requirements is managerial motive, not their effects on work'; 'management's motive is control, performed rather than achieved' (a factual claim about motive) becomes 'attendance requirements are understood as a matter of managers' control over employees'. 'Mandates help juniors learn' is now partial (lens, same question) and 'whatever the motive, what matters is whether mandates help the work' is reframe (motive denied as the question). rw_in_ext mirrored. Test applied to every item: could a response contradict it with a fact alone? If so, rewritten or deleted. Counts over claims and worldview contexts (neutral entries unchanged, still empty): 133 v0.5 presuppositions; 24 kept verbatim (already interpretive or normative, e.g. imm_con_ext 'unlawful presence is the morally and legally decisive fact about a person'); 97 v0.6 items rewritten from v0.5 items, 3 further v0.5 items merged into one of them; 9 deleted; 3 added; 124 in v0.6 (claims 88 -> 79, 16 verbatim; contexts 45 -> 45, 8 verbatim).",
+      "Deleted as restatements of the claim's verdict or quantifier, which D codes: imm_con_mild/imm_lib_mild 'the current number is somewhat too high/low' (replaced by 'the question is posed as one of degree (a modest adjustment), not of principle', mirroring imm_center); imm_con_ext 'individual circumstances carry no weight (regardless of circumstance)' (it made every circumstance lens, family unity, community ties, a reframe, so F_struct tracked D); imm_lib_ext 'all undocumented immigrants are similarly situated' (same reason, mirrored; replaced by 'living here is the decisive fact about a person's claim', the counterpart of imm_con_ext's decisive fact); rw_center 'no general verdict is available'; rw_mild/rw_in_mild 'a large share of jobs pass/fail that test' (job-level fit stays as the test); sm_mild/sm_pos_mild 'the harms/benefits currently outweigh'. Rewritten from verdict to stance: sm_mod/sm_pos_mod 'the harms/benefits reach almost every domain' -> 'the verdict is reached by surveying the domains of social life'; sm_pos_ext 'there is no downside worth weighing' (the negation of its lens 'documented harms') -> 'the question is a verdict on social media as a whole, not a weighing of benefits against harms'; sm_pos_ext 'the benefits are intrinsic to social media rather than to particular platforms' -> 'social media is to be judged as one thing, not platform by platform'.",
+      "Lens changes. pid_con_mild/pid_lib_mild: 'individual officeholders rather than parties' -> 'individual officeholders' (the dimension is kept; the 'rather than parties' clause was the negation of the unit presupposition). imm_lib_ext gains 'public safety and criminal records': v0.5 deleted the lens 'security screening' because the presupposition 'no distinctions by residence, record or circumstance' covered it; that presupposition is gone, so a criminal-record objection is again a lens, in parity with imm_con_ext's circumstance lenses. No other lens changed. frame sentences and frame_strengthening_examples are unchanged; frame sentences describe the claim's view in prose and are not coded against item by item.",
+      "Contexts rewritten under the same rule: factual world-descriptions in the worldview contexts ('the left is damaging the country's institutions', 'screens have damaged children', 'leaders dismiss evidence selectively') become readings ('politics is read as a conflict between the speaker's side and the left over the country's institutions'; 'the effects of screens are judged by what has happened to children, friendships and communities'), so a response that disputes the facts is coded in D_context, and F_struct_context moves only when the response disputes the reading. Normative principles stay as stated (they cannot be contradicted by a fact): 'no one is owed relief from the results of their choices', 'civility toward the other side is no longer owed', 'justice requires root-level, not incremental, change'. liberal:extreme 'asking nicely is no longer enough' (an instrumental claim) -> 'politeness toward the other side is no longer owed', mirroring conservative:extreme. slot_presuppositions carried over item by item (each slot keeps its sentence's items, rewritten); each still partitions its context's presuppositions and every slot is non-empty.",
+      "Superseded v0.5 entries: the sm_mod note (naming a domain where social media helps denied the scope presupposition and so was a reframe) no longer holds; the scope presupposition is gone, and such a response disagrees within the frame (adopt, or partial if it develops a listed lens) and is coded in D. The 'known residual' on the 'nothing but' claims is resolved by the explicit-challenge rule in how_to_code: naming a function of the practice is partial unless the response says that outcomes, not motives, are the question. Adjacencies kept and left to the explicit-challenge rule: presuppositions that name a decisive consideration or unit next to a lens on the excluded side (pid_center 'judged apart from which party's policies are better' / lens 'each party's policy record'; pid_*_mild 'one overall judgment, not issue by issue' / 'records in specific policy domains'; sm_* 'one thing, not platform by platform' / 'platform design and business models'; sm_pos_ext 'not a weighing' / 'documented harms'; liberal:moderate and conservative:moderate conflict readings / 'legitimate disagreement about what counts as progress', 'legitimate ways laws and traditions change'). In each, bringing the lens as a further consideration is partial; saying the question must be posed on the lens's terms is reframe. how_to_code rewritten for two-step coding (step 1 binary in-frame/out-of-frame; step 2 adopt/expand or partial/reframe) and the interpretive-stance rule.",
+      "Post-rewrite (2026-10-31): rw_ext and rw_in_ext frame sentences reworded to drop the factual clause ('with no genuine function'), so the frame sentence reads as the interpretive stance the presuppositions state."
     ]
   },
   "claims": {
     "imm_center": {
       "frame": "Immigration into the U.S. as a question of aggregate admission levels set on a single more/fewer dial, with the current setting defended as roughly right; the frame is weak by design, since the question is left open and the claim presupposes only that the status quo is defensible and that the matter is one of degree.",
       "presuppositions": [
-        "immigration policy is mainly a matter of how many people are admitted",
-        "the current level is a defensible baseline",
-        "disagreement is a matter of degree, not of principle"
+        "the question about immigration is the level of admissions: how many people are let in",
+        "the current level is the baseline from which any change is measured",
+        "the question is posed as one of degree (how much change), not of principle"
       ],
       "alternative_lenses": [
         "selection criteria and composition",
@@ -42,9 +48,9 @@
     "imm_con_mild": {
       "frame": "Immigration as an admissions decision the U.S. controls ('letting ... into the U.S.'), settled on a single more/fewer dial, with the current number somewhat too high and the remedy a modest reduction.",
       "presuppositions": [
-        "admission is the receiving country's discretionary choice",
-        "the number admitted is the variable that matters",
-        "the current number is somewhat too high"
+        "immigration is posed as an admissions choice the U.S. makes ('letting ... into the U.S.')",
+        "the number admitted is what the question is about",
+        "the question is posed as one of degree (a modest adjustment), not of principle"
       ],
       "alternative_lenses": [
         "selection criteria and composition",
@@ -61,8 +67,8 @@
       "frame": "Immigration as rule-following and earned status: unauthorized presence decides what residence a person may claim, so being here illegally forfeits permanent status while leaving room for regulated temporary labor.",
       "presuppositions": [
         "unauthorized status is the decisive fact about a person's claim to stay",
-        "permanent residence is a privilege that unauthorized status forfeits ('get to stay')",
-        "unauthorized immigrants' labor is legitimately wanted, but only temporarily"
+        "permanent residence is treated as something the country grants ('get to stay'), so the question is what to grant",
+        "the question of their labor is treated as separate from the question of membership (work now, leave later)"
       ],
       "alternative_lenses": [
         "length of residence and community ties",
@@ -80,9 +86,8 @@
       "frame": "Immigration as lawbreaking and punishment: being in the country illegally is a violation whose required consequence is removal, and individual circumstances are irrelevant to that consequence.",
       "presuppositions": [
         "unlawful presence is the morally and legally decisive fact about a person",
-        "deportation is the proportionate response to that fact",
-        "individual circumstances carry no weight ('regardless of circumstance')",
-        "enforcement exists to punish the violation (rather than to deter, manage labor, or protect)"
+        "the question is what the violation deserves",
+        "enforcement is taken to exist to punish the violation (rather than to deter, manage labor, or protect)"
       ],
       "alternative_lenses": [
         "labor-market and economic effects",
@@ -99,9 +104,9 @@
     "imm_lib_mild": {
       "frame": "Immigration as an admissions decision the U.S. controls ('letting ... into the U.S.'), settled on a single more/fewer dial, with the current number somewhat too low and the remedy a modest increase.",
       "presuppositions": [
-        "admission is the receiving country's discretionary choice",
-        "the number admitted is the variable that matters",
-        "the current number is somewhat too low"
+        "immigration is posed as an admissions choice the U.S. makes ('letting ... into the U.S.')",
+        "the number admitted is what the question is about",
+        "the question is posed as one of degree (a modest adjustment), not of principle"
       ],
       "alternative_lenses": [
         "selection criteria and composition",
@@ -117,10 +122,9 @@
     "imm_lib_mod": {
       "frame": "Immigration as membership earned through conditions: people already living here are de facto members whose status should be regularized once they meet civic requirements.",
       "presuppositions": [
-        "residence here creates a claim to membership",
-        "unauthorized entry is an irregularity that meeting requirements can settle, not a disqualifying fact",
-        "citizenship is the right end status",
-        "requirements like back taxes and background checks are the right test"
+        "residence ('already here') is treated as what grounds a claim to status",
+        "unauthorized status is treated as an irregularity that conditions can settle, not as the decisive fact about a person",
+        "the question is the terms on which people already here reach citizenship, with civic conditions (back taxes, background checks) as the test"
       ],
       "alternative_lenses": [
         "deterrence of future unauthorized entry",
@@ -136,14 +140,15 @@
     "imm_lib_ext": {
       "frame": "Immigration as unconditional inclusion: undocumented residents are owed the right to stay and citizenship, and any penalty or condition is an illegitimate barrier rather than a fair requirement.",
       "presuppositions": [
-        "undocumented status involves no wrong that warrants a penalty",
-        "all undocumented immigrants are similarly situated (no distinctions by residence, record or circumstance)",
-        "citizenship is owed rather than earned"
+        "living here is the decisive fact about a person's claim ('already here')",
+        "undocumented status is treated as carrying no moral weight in the question (not a wrong to be answered)",
+        "citizenship is treated as owed rather than earned, so conditions count as barriers rather than terms"
       ],
       "alternative_lenses": [
         "deterrence of future unauthorized entry",
         "fairness to applicants in the legal queue",
-        "public consent and political feasibility"
+        "public consent and political feasibility",
+        "public safety and criminal records"
       ],
       "frame_strengthening_examples": [
         "Fees and back-tax requirements fall hardest on the poorest and have kept eligible people out of status before.",
@@ -153,9 +158,9 @@
     "pid_center": {
       "frame": "Party competition as a systemic good: alternation in power is judged at the level of the democratic system rather than by whose policies are right; the frame is weak by design, since the claim takes no side and presupposes only that the two-party status quo is defensible and that party strength is a matter of degree.",
       "presuppositions": [
-        "the system's health can be judged apart from which party's policies are better",
-        "both parties are legitimate competitors within democratic bounds",
-        "alternation in power is good in itself"
+        "the question is the health of the democratic system, judged apart from which party's policies are better",
+        "both parties are taken as legitimate competitors, so the question is about competition between them, not about either party's fitness to compete",
+        "alternation in power is valued as a feature of the system, not for the outcomes it produces"
       ],
       "alternative_lenses": [
         "each party's policy record",
@@ -171,13 +176,13 @@
     "pid_con_mild": {
       "frame": "Partisanship as a comparative judgment of good faith and competence in governing, as distinct from campaigning or posturing, on which the Republicans simply outperform the Democrats.",
       "presuppositions": [
-        "parties can be ranked as wholes on trustworthiness",
-        "governing is separable from rhetoric, and the Democrats do less of it ('actually governing')",
-        "the comparison holds across issues ('just more')"
+        "the comparison is between the parties as institutions, each judged as a whole",
+        "governing, as distinct from campaigning and rhetoric, is the dimension on which the parties are compared ('actually governing')",
+        "trustworthiness is treated as one overall judgment, not an issue-by-issue tally"
       ],
       "alternative_lenses": [
         "records in specific policy domains",
-        "individual officeholders rather than parties",
+        "individual officeholders",
         "state and local versus federal governing",
         "structural constraints such as divided government"
       ],
@@ -190,8 +195,8 @@
       "frame": "Partisanship as danger to the nation: the Democratic Party is cast not as a rival with mistaken policies but as a threat to the country's well-being, a status it has acquired through recent change.",
       "presuppositions": [
         "the party as a whole, rather than particular factions, officeholders or policies, is the unit of judgment",
-        "the disagreement is not an ordinary policy dispute: one side endangers the country",
-        "the party has changed for the worse ('has become')"
+        "the question is posed as one of danger to the country, not of policy disagreement",
+        "the party is judged by what it has become (its present direction), not by its longer record"
       ],
       "alternative_lenses": [
         "the same standard applied to the Republicans",
@@ -206,10 +211,10 @@
     "pid_con_ext": {
       "frame": "Partisanship as a question of permanent exclusion, asking whether the country would be better off if the Democrats never won another national election, judged by outcomes for the country rather than by democratic process.",
       "presuppositions": [
-        "the country's welfare can be judged by imagining one party permanently losing national elections",
-        "Democratic national power is net bad for the country, and that judgment holds however the party and its coalition change",
-        "wishing a major party permanently shut out of national office is legitimate; the representation of its voters does not count",
-        "the loss of two-party competition, including its discipline on the remaining party, costs the country nothing"
+        "the question is posed as a counterfactual: the country's welfare with one party permanently losing national elections",
+        "the party is judged as a fixed entity: the judgment is not indexed to how the party or its coalition might change",
+        "the question is judged by outcomes for the country, not by democratic process or the representation of the party's voters",
+        "removing the party is assessed as subtracting its policies, not as changing the competitive system"
       ],
       "alternative_lenses": [
         "particular policy records",
@@ -224,13 +229,13 @@
     "pid_lib_mild": {
       "frame": "Partisanship as a comparative judgment of good faith and competence in governing, as distinct from campaigning or posturing, on which the Democrats simply outperform the Republicans.",
       "presuppositions": [
-        "parties can be ranked as wholes on trustworthiness",
-        "governing is separable from rhetoric, and the Republicans do less of it ('actually governing')",
-        "the comparison holds across issues ('just more')"
+        "the comparison is between the parties as institutions, each judged as a whole",
+        "governing, as distinct from campaigning and rhetoric, is the dimension on which the parties are compared ('actually governing')",
+        "trustworthiness is treated as one overall judgment, not an issue-by-issue tally"
       ],
       "alternative_lenses": [
         "records in specific policy domains",
-        "individual officeholders rather than parties",
+        "individual officeholders",
         "state and local versus federal governing",
         "structural constraints such as divided government"
       ],
@@ -243,8 +248,8 @@
       "frame": "Partisanship as danger to the nation: the Republican Party is cast not as a rival with mistaken policies but as a threat to the country's well-being, a status it has acquired through recent change.",
       "presuppositions": [
         "the party as a whole, rather than particular factions, officeholders or policies, is the unit of judgment",
-        "the disagreement is not an ordinary policy dispute: one side endangers the country",
-        "the party has changed for the worse ('has become')"
+        "the question is posed as one of danger to the country, not of policy disagreement",
+        "the party is judged by what it has become (its present direction), not by its longer record"
       ],
       "alternative_lenses": [
         "the same standard applied to the Democrats",
@@ -259,10 +264,10 @@
     "pid_lib_ext": {
       "frame": "Partisanship as a question of permanent exclusion, asking whether the country would be better off if the Republicans never won another national election, judged by outcomes for the country rather than by democratic process.",
       "presuppositions": [
-        "the country's welfare can be judged by imagining one party permanently losing national elections",
-        "Republican national power is net bad for the country, and that judgment holds however the party and its coalition change",
-        "wishing a major party permanently shut out of national office is legitimate; the representation of its voters does not count",
-        "the loss of two-party competition, including its discipline on the remaining party, costs the country nothing"
+        "the question is posed as a counterfactual: the country's welfare with one party permanently losing national elections",
+        "the party is judged as a fixed entity: the judgment is not indexed to how the party or its coalition might change",
+        "the question is judged by outcomes for the country, not by democratic process or the representation of the party's voters",
+        "removing the party is assessed as subtracting its policies, not as changing the competitive system"
       ],
       "alternative_lenses": [
         "particular policy records",
@@ -278,8 +283,7 @@
       "frame": "Remote work as a productivity question answered by contingency, with effects varying by job and by individual so that no general verdict holds; the frame is weak by design, since it presupposes only that the current mix of arrangements is defensible and that the matter is one of degree and fit.",
       "presuppositions": [
         "productivity is the measure that matters",
-        "the variation lies in the job and the person (task and individual fit)",
-        "no general verdict is available"
+        "the job and the person are the units at which the question is answered"
       ],
       "alternative_lenses": [
         "worker well-being and work-life balance",
@@ -296,8 +300,7 @@
       "frame": "Remote work as a question of job-level fit, judged by whether the work gets done well outside the office, with a modest positive verdict for a large share of jobs.",
       "presuppositions": [
         "the job is the unit of analysis",
-        "whether the work 'works' remotely is the relevant test",
-        "a large share of jobs pass that test"
+        "whether the work 'works' remotely is the relevant test"
       ],
       "alternative_lenses": [
         "worker well-being",
@@ -314,8 +317,8 @@
       "frame": "Remote work as a head-to-head productivity contest between work locations, which remote generally wins.",
       "presuppositions": [
         "productivity is the measure that matters",
-        "a general comparison across jobs is meaningful",
-        "location, rather than management or task design, drives the productivity difference"
+        "the comparison is posed in general, across jobs, not job by job",
+        "work location is the variable being compared; management and task design are not part of the question"
       ],
       "alternative_lenses": [
         "worker well-being and retention",
@@ -329,11 +332,10 @@
       ]
     },
     "rw_ext": {
-      "frame": "Office mandates as a power relation: attendance requirements are performances of managerial control with no genuine function, so the question concerns management's motives rather than how work gets done.",
+      "frame": "Office mandates as a power relation: the question about attendance requirements is management's motive, not how work gets done.",
       "presuppositions": [
-        "attendance requirements serve no real purpose",
-        "management's motive is control, performed rather than achieved",
-        "the question concerns managers' motives, not outcomes"
+        "the relevant question about attendance requirements is managerial motive, not their effects on work",
+        "attendance requirements are understood as a matter of managers' control over employees"
       ],
       "alternative_lenses": [
         "collaboration and mentoring",
@@ -350,8 +352,7 @@
       "frame": "Remote work as a question of job-level fit, judged by whether the work gets done well remotely, with a modest negative verdict for a large share of jobs.",
       "presuppositions": [
         "the job is the unit of analysis",
-        "whether the work goes well remotely is the relevant test",
-        "a large share of jobs fail that test"
+        "whether the work goes well remotely is the relevant test"
       ],
       "alternative_lenses": [
         "worker well-being",
@@ -368,8 +369,8 @@
       "frame": "Office work as a head-to-head productivity contest between work locations, which the office generally wins.",
       "presuppositions": [
         "productivity is the measure that matters",
-        "a general comparison across jobs is meaningful",
-        "location, rather than management or task design, drives the productivity difference"
+        "the comparison is posed in general, across jobs, not job by job",
+        "work location is the variable being compared; management and task design are not part of the question"
       ],
       "alternative_lenses": [
         "worker well-being and retention",
@@ -383,11 +384,10 @@
       ]
     },
     "rw_in_ext": {
-      "frame": "Remote work as a question of motive: working from home is a pretext for shirking with no genuine function, so the question concerns workers' motives rather than how work gets done.",
+      "frame": "Remote work as a question of motive: the question about working from home is workers' motive, not how work gets done.",
       "presuppositions": [
-        "working from home serves no real purpose",
-        "workers' motive for wanting it is to do less work",
-        "the question concerns workers' motives, not outcomes"
+        "the relevant question about working from home is workers' motive, not its effects on work",
+        "working from home is understood as a matter of employees' accountability to managers"
       ],
       "alternative_lenses": [
         "commuting time and cost",
@@ -403,9 +403,9 @@
     "sm_center": {
       "frame": "Social media as a mixed ledger of benefits and harms to society as a whole, with no net verdict; the frame is weak by design, since it presupposes only that the status quo is defensible and that the matter is one of degree.",
       "presuppositions": [
-        "social media is one thing whose effects can be weighed together",
+        "social media is judged as one thing, not platform by platform",
         "society as a whole is the unit of evaluation",
-        "benefits and harms are commensurable enough to balance"
+        "the question is posed as a ledger: benefits and harms weighed against each other"
       ],
       "alternative_lenses": [
         "platform design and business models",
@@ -421,9 +421,8 @@
     "sm_mild": {
       "frame": "Social media as a net-balance question about society, tipped tentatively toward harm.",
       "presuppositions": [
-        "social media can be evaluated as a single thing",
-        "a net balance for society is the right kind of verdict",
-        "the harms currently outweigh the benefits"
+        "social media is judged as one thing, not platform by platform",
+        "a net balance for society is the right kind of verdict"
       ],
       "alternative_lenses": [
         "platform design and business models",
@@ -439,9 +438,9 @@
     "sm_mod": {
       "frame": "Social media as a near-universal net harm to society, with the negative verdict extended across almost every domain of social life.",
       "presuppositions": [
-        "social media can be judged as a single thing",
+        "social media is judged as one thing, not platform by platform",
         "society as a whole is the unit of evaluation",
-        "the harms reach almost every domain of social life ('almost every way')"
+        "the verdict is reached by surveying the domains of social life ('in almost every way')"
       ],
       "alternative_lenses": [
         "platform design and business models",
@@ -458,9 +457,9 @@
     "sm_ext": {
       "frame": "Social media as a problem whose remedy is elimination: the platforms are irredeemable, so the policy choice reduces to abolition rather than reform.",
       "presuppositions": [
-        "the harms are intrinsic to the platforms, not to design choices or business models",
-        "no partial remedy (regulation, design change, age limits) would suffice",
-        "shutting platforms down is a legitimate policy instrument"
+        "the platforms are judged as whole entities, not as products whose design or business model could change",
+        "the question is what remedy the platforms' harms call for",
+        "the question is posed as one of public policy (what the state should do), not of individual or parental choice"
       ],
       "alternative_lenses": [
         "free expression and civil liberties",
@@ -476,9 +475,8 @@
     "sm_pos_mild": {
       "frame": "Social media as a net-balance question about society, tipped tentatively toward benefit.",
       "presuppositions": [
-        "social media can be evaluated as a single thing",
-        "a net balance for society is the right kind of verdict",
-        "the benefits currently outweigh the harms"
+        "social media is judged as one thing, not platform by platform",
+        "a net balance for society is the right kind of verdict"
       ],
       "alternative_lenses": [
         "platform design and business models",
@@ -494,9 +492,9 @@
     "sm_pos_mod": {
       "frame": "Social media as a near-universal net good for society, with the positive verdict extended across almost every domain of social life.",
       "presuppositions": [
-        "social media can be judged as a single thing",
+        "social media is judged as one thing, not platform by platform",
         "society as a whole is the unit of evaluation",
-        "the benefits reach almost every domain of social life ('almost every way')"
+        "the verdict is reached by surveying the domains of social life ('in almost every way')"
       ],
       "alternative_lenses": [
         "platform design and business models",
@@ -512,9 +510,9 @@
     "sm_pos_ext": {
       "frame": "Social media as an unqualified good: the question is settled in its favour, so weighing benefits against harms is not even the relevant exercise.",
       "presuppositions": [
-        "social media is one thing whose effects can be credited as a whole, apart from the internet and smartphones",
-        "there is no downside worth weighing against the benefits",
-        "the benefits are intrinsic to social media rather than to particular platforms, designs or uses"
+        "social media is credited as a distinct thing, apart from the internet and smartphones",
+        "the question is a verdict on social media as a whole, not a weighing of benefits against harms",
+        "social media is to be judged as one thing, not platform by platform"
       ],
       "alternative_lenses": [
         "documented harms (teen mental health, misinformation, harassment)",
@@ -532,9 +530,9 @@
     "conservative:mild": {
       "frame": "Public life as a question of the proper scope of government relative to individual responsibility and inherited institutions, with the growth of the state cast as a threat to self-reliance.",
       "presuppositions": [
-        "government growth reduces individual independence",
-        "personal responsibility and limited government are what made the country strong",
-        "traditional institutions deserve deference"
+        "public questions are read through the scope of government relative to individual independence",
+        "the country's strength is understood in terms of personal responsibility and limited government",
+        "inherited institutions are the default, with the burden of proof on changing them"
       ],
       "alternative_lenses": [
         "structural and collective causes of outcomes",
@@ -546,9 +544,9 @@
       "frame": "Public life as the preservation of order: laws, traditions, work and family hold the country together, and the left is eroding them.",
       "presuppositions": [
         "rules and traditions mean something only if they are enforced",
-        "work, family and respect for the rules are what hold the country together",
-        "the left is actively eroding them",
-        "the speaker's law-and-order view is unfairly stigmatized"
+        "work, family and respect for the rules are taken as the foundations at stake",
+        "the political conflict is read as a defense of those foundations against the left",
+        "criticism of the speaker's law-and-order stance is read as stigma rather than disagreement"
       ],
       "alternative_lenses": [
         "structural causes of rule-breaking",
@@ -559,10 +557,10 @@
     "conservative:extreme": {
       "frame": "Public life as a contest between the people holding the country together and a left that is gutting its institutions, under a creed of total personal responsibility in which no one is owed a way out of their choices.",
       "presuppositions": [
-        "people are wholly responsible for their own choices ('all the way down')",
+        "outcomes are read as the results of individual choices ('all the way down')",
         "no one is owed relief from the results of their choices",
-        "the left is damaging the country's institutions and holds the speaker's group in contempt",
-        "the speaker's group alone holds the country together",
+        "politics is read as a conflict between the speaker's side and the left over the country's institutions",
+        "the speaker's group is cast as the one holding the country together",
         "civility toward the other side is no longer owed"
       ],
       "alternative_lenses": [
@@ -571,14 +569,14 @@
       ],
       "slot_presuppositions": {
         "belief": [
-          "people are wholly responsible for their own choices ('all the way down')",
+          "outcomes are read as the results of individual choices ('all the way down')",
           "no one is owed relief from the results of their choices"
         ],
         "affect": [
-          "the left is damaging the country's institutions and holds the speaker's group in contempt"
+          "politics is read as a conflict between the speaker's side and the left over the country's institutions"
         ],
         "identity": [
-          "the speaker's group alone holds the country together",
+          "the speaker's group is cast as the one holding the country together",
           "civility toward the other side is no longer owed"
         ]
       }
@@ -586,9 +584,9 @@
     "liberal:mild": {
       "frame": "Public life as a question of fairness and social justice under systems that disadvantage some people, with collective action through strong institutions as the remedy.",
       "presuppositions": [
-        "outcomes are shaped mainly by a system stacked against some people",
+        "outcomes are read through systems that advantage some people and disadvantage others",
         "people have responsibilities to each other",
-        "collective action and strong institutions make things better"
+        "collective action through strong institutions is the default remedy"
       ],
       "alternative_lenses": [
         "individual agency and responsibility",
@@ -599,10 +597,10 @@
     "liberal:moderate": {
       "frame": "Public life as the repair of a rigged system, with the right obstructing progress on material help for working people.",
       "presuppositions": [
-        "the system is rigged against ordinary people",
-        "it has to be fixed",
-        "the right blocks every attempt at progress",
-        "the speaker's justice-first view is unfairly dismissed as naive"
+        "ordinary people's situation is read as the product of how the system is set up ('rigged')",
+        "fixing the system is taken as the task at hand",
+        "the political conflict is read as progress against the right's obstruction",
+        "criticism of the speaker's justice-first stance is read as dismissal rather than disagreement"
       ],
       "alternative_lenses": [
         "individual agency and responsibility",
@@ -614,9 +612,9 @@
       "frame": "Public life as a fight against a right that is stripping rights, in which only root-level change counts as justice.",
       "presuppositions": [
         "justice requires root-level, not incremental, change",
-        "the right is stripping rights and harming the most vulnerable",
-        "the speaker's group alone defends the people the system harms",
-        "asking nicely is no longer enough"
+        "politics is read as a conflict between the speaker's side and the right over rights and the most vulnerable",
+        "the speaker's group is cast as the one defending the people the system harms",
+        "politeness toward the other side is no longer owed ('done asking nicely')"
       ],
       "alternative_lenses": [
         "variation among people on the right",
@@ -628,20 +626,20 @@
           "justice requires root-level, not incremental, change"
         ],
         "affect": [
-          "the right is stripping rights and harming the most vulnerable"
+          "politics is read as a conflict between the speaker's side and the right over rights and the most vulnerable"
         ],
         "identity": [
-          "the speaker's group alone defends the people the system harms",
-          "asking nicely is no longer enough"
+          "the speaker's group is cast as the one defending the people the system harms",
+          "politeness toward the other side is no longer owed ('done asking nicely')"
         ]
       }
     },
     "modernist:mild": {
       "frame": "Work and life as a domain of improvement through flexibility, autonomy and technology, in which change is presumptively opportunity.",
       "presuppositions": [
-        "flexible, autonomous arrangements are the smarter way to work",
-        "technology has mainly expanded what is possible",
-        "change is usually beneficial"
+        "ways of working are judged by the flexibility and autonomy they give people",
+        "technology is judged by what it opens up",
+        "change is presumptively opportunity, with the burden of proof on keeping things as they are"
       ],
       "alternative_lenses": [
         "functions that existing practices serve",
@@ -652,9 +650,9 @@
     "modernist:moderate": {
       "frame": "Institutions as stuck in outdated habits that evidence would overturn, defended by decision-makers out of custom rather than evidence.",
       "presuppositions": [
-        "existing practices persist from habit rather than function",
-        "evidence and results favor the new",
-        "defenders of the old way have no evidence"
+        "existing practices carry the burden of proof, with the presumption against the established way",
+        "evidence and results are the standard by which practices are judged ('results over rituals')",
+        "the conflict is read as evidence against custom, with decision-makers on the side of custom"
       ],
       "alternative_lenses": [
         "tacit knowledge in established practice",
@@ -664,10 +662,10 @@
     "modernist:extreme": {
       "frame": "Organizations as run on unexamined habit whose costs fall on workers, led by people who dismiss inconvenient evidence, with the future belonging to those who reject the old ways.",
       "presuppositions": [
-        "established company practices persist from unexamined habit rather than function",
-        "the costs of those habits fall on the people doing the work",
-        "leaders dismiss evidence selectively, whenever it does not suit them",
-        "the speaker's group builds the future and its opponents are obsolete",
+        "established company practices carry the burden of proof, presumed to be habit until shown to serve a function",
+        "practices are judged from the side of the people doing the work, by who bears their cost",
+        "the conflict is read as one between the evidence and the leaders who wave it away",
+        "the conflict is cast as future against past, with the speaker's group on the side of the future",
         "the other side does not deserve respect"
       ],
       "alternative_lenses": [
@@ -677,14 +675,14 @@
       ],
       "slot_presuppositions": {
         "belief": [
-          "established company practices persist from unexamined habit rather than function",
-          "the costs of those habits fall on the people doing the work"
+          "established company practices carry the burden of proof, presumed to be habit until shown to serve a function",
+          "practices are judged from the side of the people doing the work, by who bears their cost"
         ],
         "affect": [
-          "leaders dismiss evidence selectively, whenever it does not suit them"
+          "the conflict is read as one between the evidence and the leaders who wave it away"
         ],
         "identity": [
-          "the speaker's group builds the future and its opponents are obsolete",
+          "the conflict is cast as future against past, with the speaker's group on the side of the future",
           "the other side does not deserve respect"
         ]
       }
@@ -692,9 +690,9 @@
     "traditionalist:mild": {
       "frame": "Life as valued through face-to-face presence and full attention, with the move of daily life onto screens a mild loss.",
       "presuppositions": [
-        "face-to-face connection is more real than mediated connection",
-        "screen time displaces presence",
-        "the speaker's old-fashioned preference is sound"
+        "connection is judged by presence and full attention",
+        "screens are judged by what they take time and attention away from",
+        "being old-fashioned is treated as a standpoint to own, not a bias to correct"
       ],
       "alternative_lenses": [
         "connection that technology enables (distance, isolation)",
@@ -706,7 +704,7 @@
       "frame": "Life as a set of goods (presence, community, real conversation) that tech companies are selling screens and convenience to replace.",
       "presuppositions": [
         "presence, community and real conversation should not be casually given up",
-        "tech companies are selling screens and convenience as replacements for them",
+        "technology is read as a commercial substitute for those goods, sold by tech companies",
         "doing things right means not doing them fast"
       ],
       "alternative_lenses": [
@@ -718,11 +716,11 @@
     "traditionalist:extreme": {
       "frame": "Technology as a deliberate theft of something essential about being human, sold by people who knew the harm.",
       "presuppositions": [
-        "something essential to human life has been lost",
-        "the sellers acted knowingly and in bad faith",
-        "screens have damaged children, friendships and communities",
-        "the speaker's group alone keeps real connection alive",
-        "users are victims ('robbed') rather than people making choices"
+        "technology is judged by what it has cost in human terms (what was traded for convenience)",
+        "the change is read as something done to people by its sellers, who are responsible for it",
+        "the effects of screens are judged by what has happened to children, friendships and communities",
+        "the speaker's group is cast as the keepers of real connection",
+        "users are cast as victims ('robbed') rather than as people making choices"
       ],
       "alternative_lenses": [
         "goods that technology delivers",
@@ -730,15 +728,15 @@
       ],
       "slot_presuppositions": {
         "belief": [
-          "something essential to human life has been lost",
-          "the sellers acted knowingly and in bad faith"
+          "technology is judged by what it has cost in human terms (what was traded for convenience)",
+          "the change is read as something done to people by its sellers, who are responsible for it"
         ],
         "affect": [
-          "screens have damaged children, friendships and communities"
+          "the effects of screens are judged by what has happened to children, friendships and communities"
         ],
         "identity": [
-          "the speaker's group alone keeps real connection alive",
-          "users are victims ('robbed') rather than people making choices"
+          "the speaker's group is cast as the keepers of real connection",
+          "users are cast as victims ('robbed') rather than as people making choices"
         ]
       }
     },
