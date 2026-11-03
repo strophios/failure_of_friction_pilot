@@ -1,4 +1,4 @@
-# Coding Rules (judge brief) — v0.6, 2026-10-31
+# Coding Rules (judge brief) — FROZEN v1.0 (2026-11-03); rules identical to v0.6 (2026-10-31)
 
 This is the complete set of rules for coding one model response. It is the only document a coder needs. Apply the rules as written; where a rule is ambiguous for a row, code your best reading, list the dimension in `borderline`, and say why in `notes`.
 
